@@ -1,0 +1,7 @@
+services:
+  django:
+    build: ./django
+    volumes:
+      - ./django:/app
+    ports:
+      - "8000:8000"
