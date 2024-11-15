@@ -5,6 +5,13 @@ services:
       - ./django:/app
     ports:
       - "8000:8000"
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
   redis:
     image: redis:7-alpine
     ports:
