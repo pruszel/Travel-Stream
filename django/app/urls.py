@@ -16,7 +16,40 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django.http import JsonResponse
+import json
+from django.core.exceptions import ValidationError
+from app.models.reservation import Reservation
+
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({})
+
+@csrf_protect
+@require_http_methods(["POST"])
+def reserve(request):
+    try:
+        data = json.loads(request.body)
+        try:
+            data['traveling_from'] = data.pop('from')
+            data['departure_date'] = data.pop('departureDate')
+            data['return_date'] = data.pop('returnDate')
+            data['children'] = data.get('children', 0)
+            data['infants'] = data.get('infants', 0)
+            reservation = Reservation.objects.create(**data)
+            return JsonResponse({
+                'message': 'Reservation created successfully',
+                'id': reservation.id
+            }, status=201)
+        except ValidationError as e:
+            return JsonResponse({'errors': e.message_dict}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('csrf-token/', get_csrf_token, name='get_csrf_token'),
+    path('reserve/', reserve, name='reserve'),
 ]
