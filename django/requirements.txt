@@ -5,3 +5,4 @@ django-storages
 boto3
 pillow
 django-cors-headers
+pytest-django
