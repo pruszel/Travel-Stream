@@ -1,1 +1,1 @@
-from .test_reservation_view import *
+from .test_reservationlistview import *
