@@ -1,5 +1,5 @@
 """
-URL configuration for app project.
+URL configuration for travel_stream_rest project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/
@@ -16,10 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from app import views
+from travel_stream_rest import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('csrf-token/', views.get_csrf_token_view),
-    path('reservation/', views.ReservationListView.as_view(), name='reservation-list'),
+    path('reservation/', views.ReservationListView.as_view(),
+         name='reservation-list'),
 ]

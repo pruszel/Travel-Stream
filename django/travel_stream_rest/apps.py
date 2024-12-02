@@ -1,8 +1,9 @@
 from django.apps import AppConfig
 
-class AppConfig(AppConfig):
+
+class TravelStreamRestConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'app'
-    
+    name = 'travel_stream_rest'
+
     def ready(self):
         pass

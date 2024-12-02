@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
-from app.models import Reservation
+from travel_stream_rest.models import Reservation
 
 
 @pytest.mark.django_db

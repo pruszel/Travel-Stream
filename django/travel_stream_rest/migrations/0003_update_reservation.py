@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0002_add_reservation'),
+        ('travel_stream_rest', '0002_add_reservation'),
     ]
 
     operations = [

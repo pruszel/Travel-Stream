@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from app.models import Agency
+from travel_stream_rest.models import Agency
 
 class Command(BaseCommand):
     help = 'Creates a new agency'

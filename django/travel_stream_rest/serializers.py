@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from app.models.reservation import Reservation
+from travel_stream_rest.models.reservation import Reservation
 
 
 class ReservationSerializer(serializers.Serializer):
