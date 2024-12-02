@@ -3,25 +3,21 @@
 import * as React from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 // import { Calendar } from "@/components/ui/calendar";
 // import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { error } from "console";
 // import {
 //   Popover,
 //   PopoverContent,
@@ -34,10 +30,10 @@ const formSchema = z.object({
   name: z.string().min(2).max(255),
   phone: z.string(),
   email: z.string().email(),
-  from: z.string(),
+  traveling_from: z.string(),
   destination: z.string(),
-  departureDate: z.string().optional(),
-  returnDate: z.string(),
+  departure_date: z.string().optional(),
+  return_date: z.string(),
   adults: z.coerce.number().int().min(1),
   children: z.coerce.number().int().min(0).optional(),
   infants: z.coerce.number().int().min(0).optional(),
@@ -55,8 +51,8 @@ export default function ReservationForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      departureDate: format(new Date(), "yyyy-MM-dd"),
-      returnDate: format(
+      departure_date: format(new Date(), "yyyy-MM-dd"),
+      return_date: format(
         new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         "yyyy-MM-dd",
       ),
@@ -85,7 +81,7 @@ export default function ReservationForm({
           throw new Error("CSRF token not found");
         }
 
-        fetch("http://localhost:8000/reserve/", {
+        fetch("http://localhost:8000/reservation/", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -178,7 +174,7 @@ export default function ReservationForm({
 
       <FormField
         control={form.control}
-        name="from"
+        name="traveling_from"
         render={({ field }) => (
           <FormItem className="py-2">
             <FormLabel>Traveling From</FormLabel>
@@ -218,7 +214,7 @@ export default function ReservationForm({
 
       <FormField
         control={form.control}
-        name="departureDate"
+        name="departure_date"
         render={({ field }) => (
           <FormItem className="py-2">
             <FormLabel>Departure Date</FormLabel>
@@ -233,7 +229,7 @@ export default function ReservationForm({
 
       <FormField
         control={form.control}
-        name="returnDate"
+        name="return_date"
         render={({ field }) => (
           <FormItem className="py-2">
             <FormLabel>Return Date</FormLabel>

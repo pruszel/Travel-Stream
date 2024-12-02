@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import ReservationForm from "./ReservationForm";
+import ReservationForm from "../components/ReservationForm";
 
 const ReservationPage: React.FC = () => {
   const [formSubmissionSuccess, setFormSubmissionSuccess] =

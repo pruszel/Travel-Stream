@@ -5,7 +5,7 @@ import ReservationForm from "./ReservationForm";
 
 describe("Reservation Component", () => {
   beforeEach(() => {
-    render(<ReservationForm />);
+    render(<ReservationForm onSubmissionSuccess={() => {}} />);
   });
 
   test("renders all input fields", () => {
@@ -40,7 +40,7 @@ describe("Reservation Component", () => {
     expect(screen.getByLabelText(/traveling from/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/traveling from/i)).toHaveAttribute(
       "name",
-      "from",
+      "traveling_from",
     );
     expect(screen.getByLabelText(/traveling from/i)).toHaveAttribute(
       "type",
@@ -68,7 +68,7 @@ describe("Reservation Component", () => {
     expect(screen.getByLabelText(/departure date/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/departure date/i)).toHaveAttribute(
       "name",
-      "departureDate",
+      "departure_date",
     );
     expect(screen.getByLabelText(/departure date/i)).toHaveAttribute(
       "type",
@@ -78,7 +78,7 @@ describe("Reservation Component", () => {
     expect(screen.getByLabelText(/return date/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/return date/i)).toHaveAttribute(
       "name",
-      "returnDate",
+      "return_date",
     );
     expect(screen.getByLabelText(/return date/i)).toHaveAttribute(
       "type",
