@@ -3,9 +3,9 @@ from django.core.exceptions import ValidationError
 
 
 class Reservation(models.Model):
-    name = models.CharField(max_length=127)
-    phone = models.CharField(max_length=31)
-    email = models.EmailField(null=True, blank=True)
+    name = models.CharField(max_length=127, db_index=True)
+    phone = models.CharField(max_length=31, db_index=True)
+    email = models.EmailField(null=True, blank=True, db_index=True)
     traveling_from = models.CharField(max_length=255)
     destination = models.CharField(max_length=255)
     departure_date = models.DateField(null=True, blank=True)
@@ -19,10 +19,7 @@ class Reservation(models.Model):
     class Meta:
         ordering = ['-created_at']
         indexes = [
-            models.Index(fields=['name']),
             models.Index(fields=['name', 'email']),
-            models.Index(fields=['phone'])
-            
         ]
 
     def clean(self):
