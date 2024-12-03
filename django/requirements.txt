@@ -7,5 +7,6 @@ pillow
 django-cors-headers
 pytest
 pytest-django
+pytest-watch
 djangorestframework
 psycopg
