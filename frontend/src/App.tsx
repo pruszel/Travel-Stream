@@ -1,8 +1,16 @@
 import * as React from "react";
 import "./App.css";
+import { v4 as uuidv4 } from "uuid";
+
+interface Trip {
+  id: string;
+  destination: string;
+  startDate: Date;
+  endDate: Date;
+}
 
 function App() {
-  const [trips, setTrips] = React.useState([]);
+  const [trips, setTrips] = React.useState<Trip[]>([]);
 
   React.useEffect(() => {
     const savedTrips = localStorage.getItem("trips") || "[]";
@@ -22,7 +30,13 @@ function App() {
   );
 }
 
-function PrimaryButton({ text, type, onClick }) {
+interface PrimaryButtonProps {
+  text: string;
+  type: "submit" | "button" | "reset";
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
+function PrimaryButton({ text, type, onClick }: PrimaryButtonProps) {
   return (
     <>
       <button
@@ -35,9 +49,8 @@ function PrimaryButton({ text, type, onClick }) {
     </>
   );
 }
-function TripList({ trips }) {
-  const handleTripClick = (e: React.MouseEvent<HTMLLIElement>) => {};
 
+function TripList({ trips }: { trips: Trip[] }) {
   return (
     <>
       <div className="p-8 flex justify-center">
@@ -49,7 +62,6 @@ function TripList({ trips }) {
                 <li
                   key={trip.destination}
                   className="text-blue-500 underline cursor-pointer"
-                  onClick={handleTripClick}
                 >
                   {trip.destination}
                 </li>
@@ -63,11 +75,16 @@ function TripList({ trips }) {
   );
 }
 
-function AddTrip({ setTrips }) {
-  const [formData, setFormData] = React.useState({
+function AddTrip({
+  setTrips,
+}: {
+  setTrips: React.Dispatch<React.SetStateAction<Trip[]>>;
+}) {
+  const [formData, setFormData] = React.useState<Trip>({
+    id: uuidv4(),
     destination: "",
-    departureDate: new Date().toISOString().split("T")[0],
-    returnDate: "",
+    startDate: new Date(),
+    endDate: new Date(),
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +114,7 @@ function AddTrip({ setTrips }) {
               onChange={handleChange}
               className="bg-slate-200 py-1 px-2 border-2 border-slate-300 rounded-md"
             ></input>
+
             <label htmlFor="departureDate" className="mt-4 pb-1">
               When are you leaving?
             </label>
@@ -104,10 +122,11 @@ function AddTrip({ setTrips }) {
               type="date"
               id="departureDate"
               name="departureDate"
-              value={formData.departureDate}
+              value={formData.startDate.toISOString().split("T")[0]}
               onChange={handleChange}
               className=""
             ></input>
+
             <label htmlFor="departureDate" className="mt-4 pb-1">
               When are you coming back?
             </label>
@@ -115,9 +134,10 @@ function AddTrip({ setTrips }) {
               type="date"
               id="returnDate"
               name="returnDate"
-              value={formData.returnDate}
+              value={formData.endDate.toISOString().split("T")[0]}
               onChange={handleChange}
             ></input>
+
             <PrimaryButton type="submit" text="Submit" />
           </div>
         </div>
