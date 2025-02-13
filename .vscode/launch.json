@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "name": "Vite - Debug Chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/frontend/src",
+      "sourceMapPathOverrides": {
+        "webpack://@fs/*": "${webRoot}/*"
+      },
+      "runtimeArgs": [
+        "--remote-debugging-port=9222",
+      ],
+      "trace": true,
+      "smartStep": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-profile",
+    }
+  ]
+}

@@ -163,3 +163,4 @@ cython_debug/
 # Developer-specific private files
 .private/
 **/.vscode/settings.json
+**/.vscode/chrome-profile
