@@ -35,3 +35,15 @@ export type TripData = {
   updatedAt: Date;
   deletedAt?: Date;
 };
+
+export class Trip {
+  private data: TripData;
+
+  constructor(data: TripData) {
+    this.data = data;
+  }
+
+  get name() {
+    return this.data.name;
+  }
+}
