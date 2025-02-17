@@ -12,6 +12,7 @@ export function UpcomingTripPanel({ trip }: { trip: Trip | null }) {
   return (
     <>
       <h2>{trip.name}</h2>
+      {trip.startDate ? <p>{trip.getDaysUntilTripStarts()} days away</p> : null}
     </>
   );
 }
