@@ -4,7 +4,8 @@ import { UpcomingTripPanel } from "../components/UpcomingTripPanel";
 export default function Home() {
   return (
     <>
-      <UpcomingTripPanel />
+      {/* TODO: find and pass the next soonest trip into UpcomingTripPanel */}
+      <UpcomingTripPanel trip={null} />
       <RecentTripsPanel />
     </>
   );
