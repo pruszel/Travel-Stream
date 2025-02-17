@@ -1,3 +1,4 @@
+import { differenceInDays } from "date-fns";
 import { CarRentalData } from "./CarRental";
 import { FlightData } from "./Flight";
 import { HotelData } from "./Hotel";
@@ -45,5 +46,14 @@ export class Trip {
 
   get name() {
     return this.data.name;
+  }
+  get startDate() {
+    return this.data.startDate;
+  }
+
+  // TODO: incorporate the user's current timezone and the trip's start timezone into the calculation of days until the trip starts
+  getDaysUntilTripStarts() {
+    if (!this.data.startDate) return null;
+    return differenceInDays(this.data.startDate, new Date());
   }
 }
