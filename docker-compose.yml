@@ -3,9 +3,9 @@ services:
     build: ./frontend
     volumes:
       - ./frontend:/app
-      - /app/node_modules
-    ports:
-      - "3000:3000"
+      - type: bind # use bind mount to access vitest package from WebStorm on host machine
+        source: ./frontend/node_modules
+        target: /app/node_modules
 
   django:
     build: ./django
