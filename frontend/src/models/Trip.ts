@@ -65,4 +65,8 @@ export class Trip {
     if (!this.data.startDate) return null;
     return differenceInDays(this.data.startDate, new Date());
   }
+
+  getBookedFlightCount() {
+    return this.data.flights?.filter((flight) => flight.booked).length || 0;
+  }
 }
