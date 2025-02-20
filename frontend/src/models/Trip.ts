@@ -47,8 +47,17 @@ export class Trip {
   get name() {
     return this.data.name;
   }
+
   get startDate() {
     return this.data.startDate;
+  }
+
+  get startCity() {
+    return this.data.startCity;
+  }
+
+  get endCity() {
+    return this.data.endCity;
   }
 
   // TODO: incorporate the user's current timezone and the trip's start timezone into the calculation of days until the trip starts
