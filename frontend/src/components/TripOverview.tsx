@@ -1,11 +1,15 @@
 import { Trip } from "../models/Trip";
 import pluralize from "pluralize";
+import { PrimaryButtonWithLink } from "./PrimaryButtonWithLink.tsx";
 
-export function UpcomingTripPanel({ trip }: { trip: Trip | null }) {
+export function TripOverview({ trip }: { trip: Trip | null }) {
   if (!trip) {
     return (
       <>
         <p>No upcoming trips</p>
+        <PrimaryButtonWithLink to={"/trips/new"}>
+          Add a trip
+        </PrimaryButtonWithLink>
       </>
     );
   }

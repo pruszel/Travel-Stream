@@ -1,9 +1,10 @@
 import { describe, test, expect, afterEach } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { UpcomingTripPanel } from "./UpcomingTripPanel";
+import { TripOverview } from "./TripOverview.tsx";
 import { Trip } from "../models/Trip";
+import { MemoryRouter } from "react-router";
 
-describe("UpcomingTripPanel", () => {
+describe("TripOverview", () => {
   afterEach(async () => {
     cleanup();
   });
@@ -18,12 +19,20 @@ describe("UpcomingTripPanel", () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    render(<UpcomingTripPanel trip={mockTrip} />);
+    render(
+      <MemoryRouter>
+        <TripOverview trip={mockTrip} />
+      </MemoryRouter>,
+    );
     expect(screen.getByText("Trip to Paris")).toBeDefined();
   });
 
   test("displays a message when no trip provided", () => {
-    render(<UpcomingTripPanel trip={null} />);
+    render(
+      <MemoryRouter>
+        <TripOverview trip={null} />
+      </MemoryRouter>,
+    );
     expect(screen.getByText("No upcoming trips")).toBeDefined();
   });
 
@@ -39,7 +48,7 @@ describe("UpcomingTripPanel", () => {
       startCity: "New York",
       endCity: "Paris",
     });
-    render(<UpcomingTripPanel trip={mockTrip} />);
+    render(<TripOverview trip={mockTrip} />);
     expect(screen.getByText("New York")).toBeDefined();
     expect(screen.getByText("Paris")).toBeDefined();
   });
@@ -54,7 +63,7 @@ describe("UpcomingTripPanel", () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    render(<UpcomingTripPanel trip={mockTripWithNoBookedFlights} />);
+    render(<TripOverview trip={mockTripWithNoBookedFlights} />);
     expect(screen.getByText("No flights")).toBeDefined();
     cleanup();
 
@@ -77,7 +86,7 @@ describe("UpcomingTripPanel", () => {
         },
       ],
     });
-    render(<UpcomingTripPanel trip={mockTripWithOneBookedFlight} />);
+    render(<TripOverview trip={mockTripWithOneBookedFlight} />);
     expect(screen.getByText("1 flight booked")).toBeDefined();
 
     const mockTripWithTwoBookedFlights = new Trip({
@@ -115,7 +124,7 @@ describe("UpcomingTripPanel", () => {
         },
       ],
     });
-    render(<UpcomingTripPanel trip={mockTripWithTwoBookedFlights} />);
+    render(<TripOverview trip={mockTripWithTwoBookedFlights} />);
     expect(screen.getByText("2 flights booked")).toBeDefined();
   });
 
@@ -129,7 +138,7 @@ describe("UpcomingTripPanel", () => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    render(<UpcomingTripPanel trip={mockTripWithNoCarRentals} />);
+    render(<TripOverview trip={mockTripWithNoCarRentals} />);
     expect(screen.getByText("No car rentals")).toBeDefined();
 
     const mockTripWithOneBookedCarRental = new Trip({
@@ -161,7 +170,7 @@ describe("UpcomingTripPanel", () => {
         },
       ],
     });
-    render(<UpcomingTripPanel trip={mockTripWithOneBookedCarRental} />);
+    render(<TripOverview trip={mockTripWithOneBookedCarRental} />);
     expect(screen.getByText("1 car rental booked")).toBeDefined();
 
     const mockTripWithTwoBookedCarRentals = new Trip({
@@ -193,7 +202,7 @@ describe("UpcomingTripPanel", () => {
         },
       ],
     });
-    render(<UpcomingTripPanel trip={mockTripWithTwoBookedCarRentals} />);
+    render(<TripOverview trip={mockTripWithTwoBookedCarRentals} />);
     expect(screen.getByText("2 car rentals booked")).toBeDefined();
   });
 
