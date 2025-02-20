@@ -39,4 +39,44 @@ describe("UpcomingTripPanel", () => {
     expect(screen.getByText("New York")).toBeDefined();
     expect(screen.getByText("Paris")).toBeDefined();
   });
+
+  test("displays the number of booked flights", () => {
+    const mockTrip: Trip = new Trip({
+      name: "Trip to Paris",
+      id: "1",
+      startDate: new Date(),
+      endDate: new Date(),
+      ownerId: "1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      flights: [
+        {
+          id: "1",
+          booked: true,
+          departureDate: new Date(),
+          departureTimezone: "America/Los_Angeles",
+          arrivalDate: new Date(),
+          arrivalTimezone: "America/Denver",
+        },
+        {
+          id: "2",
+          booked: false,
+          departureDate: new Date(),
+          departureTimezone: "America/Denver",
+          arrivalDate: new Date(),
+          arrivalTimezone: "America/New_York",
+        },
+        {
+          id: "3",
+          booked: true,
+          departureDate: new Date(),
+          departureTimezone: "America/New_York",
+          arrivalDate: new Date(),
+          arrivalTimezone: "Europe/Paris",
+        },
+      ],
+    });
+    render(<UpcomingTripPanel trip={mockTrip} />);
+    expect(screen.getByText("2 flights booked")).toBeDefined();
+  });
 });

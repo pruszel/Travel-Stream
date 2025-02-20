@@ -15,6 +15,7 @@ export function UpcomingTripPanel({ trip }: { trip: Trip | null }) {
       {trip.startDate ? <p>{trip.getDaysUntilTripStarts()} days away</p> : null}
       {trip.startCity ? <p>{trip.startCity}</p> : null}
       {trip.endCity ? <p>{trip.endCity}</p> : null}
+      <p>{trip.getBookedFlightCount()} flights booked</p>
     </>
   );
 }
