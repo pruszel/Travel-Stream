@@ -198,4 +198,66 @@ describe("Trip", () => {
       mockTripWithOneBookedAndOneNonBookedFlight.getBookedFlightCount(),
     ).toBe(1);
   });
+
+  test("it returns the number of booked car rentals", () => {
+    const mockTripWithNoCarRentals: Trip = new Trip({
+      name: "Trip to Paris",
+      id: "1",
+      ownerId: "1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    expect(mockTripWithNoCarRentals.getBookedCarRentalCount()).toBe(0);
+
+    const mockTripWithOneBookedCarRental: Trip = new Trip({
+      name: "Trip to Paris",
+      id: "1",
+      ownerId: "1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      carRentals: [
+        {
+          id: "1",
+          booked: true,
+          company: "Hertz",
+          pickUpDate: new Date(),
+          dropOffDate: new Date(),
+          pickUpLocation: "CDG",
+          dropOffLocation: "CDG",
+        },
+      ],
+    });
+    expect(mockTripWithOneBookedCarRental.getBookedCarRentalCount()).toBe(1);
+
+    const mockTripWithOneBookedAndOneNonBookedCarRental: Trip = new Trip({
+      name: "Trip to Paris",
+      id: "1",
+      ownerId: "1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      carRentals: [
+        {
+          id: "1",
+          booked: true,
+          company: "Hertz",
+          pickUpDate: new Date(),
+          dropOffDate: new Date(),
+          pickUpLocation: "CDG",
+          dropOffLocation: "CDG",
+        },
+        {
+          id: "2",
+          booked: false,
+          company: "Enterprise",
+          pickUpDate: new Date(),
+          dropOffDate: new Date(),
+          pickUpLocation: "CDG",
+          dropOffLocation: "CDG",
+        },
+      ],
+    });
+    expect(
+      mockTripWithOneBookedAndOneNonBookedCarRental.getBookedCarRentalCount(),
+    ).toBe(1);
+  });
 });

@@ -69,4 +69,10 @@ export class Trip {
   getBookedFlightCount() {
     return this.data.flights?.filter((flight) => flight.booked).length || 0;
   }
+
+  getBookedCarRentalCount() {
+    return (
+      this.data.carRentals?.filter((carRental) => carRental.booked).length || 0
+    );
+  }
 }
