@@ -8,7 +8,15 @@ function App() {
     <>
       <h1 className="text-3xl font-bold">Hello, World!</h1>
       <br />
-      <button className="btn" disabled={clicked} onClick={() => {setClicked(true);}}>{clicked ? "Thanks!" : "Click Me!"}</button>
+      <button
+        className="btn"
+        disabled={clicked}
+        onClick={() => {
+          setClicked(true);
+        }}
+      >
+        {clicked ? "Thanks!" : "Click Me!"}
+      </button>
     </>
   );
 }
