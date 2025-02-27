@@ -4,6 +4,8 @@ A web app to streamline travel planning, available at [travelstreamapp.com](http
 
 ## Development
 
+The app is built with Vite and React.
+
 ### Requirements
 
 - Node.js version 22
