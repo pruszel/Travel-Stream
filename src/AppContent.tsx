@@ -1,5 +1,7 @@
 import { SignInWithGoogle } from "./components/SignInWithGoogle.tsx";
 import { User } from "firebase/auth";
+import { useSignOut } from "react-firebase-hooks/auth";
+import { auth } from "./firebase";
 
 function AppContent({
   user,
@@ -10,6 +12,8 @@ function AppContent({
   loading: boolean;
   error: Error | undefined;
 }) {
+  const [signOut] = useSignOut(auth);
+
   return (
     <>
       {!loading && (
@@ -25,6 +29,16 @@ function AppContent({
         </>
       )}
       {!loading && !user && <SignInWithGoogle />}
+      {user && (
+        <button
+          className="btn btn-ghost"
+          onClick={() => {
+            void signOut();
+          }}
+        >
+          Sign Out
+        </button>
+      )}
     </>
   );
 }

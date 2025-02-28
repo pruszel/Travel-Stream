@@ -3,6 +3,44 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { AppContent } from "./AppContent.tsx";
 import { IdTokenResult } from "firebase/auth";
 
+const mockUser = {
+  displayName: "John Doe",
+  emailVerified: true,
+  isAnonymous: false,
+  metadata: {},
+  providerId: "",
+  providerData: [],
+  refreshToken: "",
+  tenantId: "",
+  delete(): Promise<void> {
+    return Promise.resolve();
+  },
+  getIdToken(): Promise<string> {
+    return Promise.resolve("");
+  },
+  getIdTokenResult(): Promise<IdTokenResult> {
+    return Promise.resolve({
+      authTime: "",
+      claims: {},
+      expirationTime: "",
+      issuedAtTime: "",
+      signInProvider: "",
+      token: "",
+      signInSecondFactor: null,
+    });
+  },
+  reload(): Promise<void> {
+    return Promise.resolve();
+  },
+  toJSON(): object {
+    return {};
+  },
+  email: "",
+  phoneNumber: "",
+  photoURL: "",
+  uid: "",
+};
+
 describe("AppContent", () => {
   afterEach(() => {
     cleanup();
@@ -38,44 +76,12 @@ describe("AppContent", () => {
   });
 
   it("renders the user name", () => {
-    const user = {
-      displayName: "John Doe",
-      emailVerified: true,
-      isAnonymous: false,
-      metadata: {},
-      providerId: "",
-      providerData: [],
-      refreshToken: "",
-      tenantId: "",
-      delete(): Promise<void> {
-        return Promise.resolve();
-      },
-      getIdToken(): Promise<string> {
-        return Promise.resolve("");
-      },
-      getIdTokenResult(): Promise<IdTokenResult> {
-        return Promise.resolve({
-          authTime: "",
-          claims: {},
-          expirationTime: "",
-          issuedAtTime: "",
-          signInProvider: "",
-          token: "",
-          signInSecondFactor: null,
-        });
-      },
-      reload(): Promise<void> {
-        return Promise.resolve();
-      },
-      toJSON(): object {
-        return {};
-      },
-      email: "",
-      phoneNumber: "",
-      photoURL: "",
-      uid: "",
-    };
-    render(<AppContent user={user} loading={false} error={undefined} />);
+    render(<AppContent user={mockUser} loading={false} error={undefined} />);
     expect(screen.getByText("Hello, John Doe!")).toBeDefined();
+  });
+
+  it("renders the sign out button", () => {
+    render(<AppContent user={mockUser} loading={false} error={undefined} />);
+    expect(screen.getByRole("button", { name: /Sign Out/i })).toBeDefined();
   });
 });
