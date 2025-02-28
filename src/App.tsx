@@ -1,18 +1,21 @@
 import "./App.css";
-import React from "react";
 import { SignInWithGoogle } from "./components/SignInWithGoogle.tsx";
-import { User } from "firebase/auth";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./firebase";
 
 function App() {
-  const [user, setUser] = React.useState<undefined | User>();
+  const [user, loading, error] = useAuthState(auth);
 
   return (
     <>
-      <h1 className="text-3xl font-bold">
-        Hello, {user ? user.displayName : "World"}!
-      </h1>
+      {!loading && (
+        <h1 className="text-3xl font-bold">
+          Hello, {user ? user.displayName : "World"}!
+        </h1>
+      )}
       <br />
-      {!user && <SignInWithGoogle setUser={setUser} />}
+      {error && <p>Error authenticating with Google: <pre>{error.message}</pre></p>}
+      {!loading && !user && <SignInWithGoogle />}
     </>
   );
 }

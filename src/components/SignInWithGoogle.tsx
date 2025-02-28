@@ -1,37 +1,16 @@
 import GoogleButton from "react-google-button";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
-import { User } from "firebase/auth";
 
-function SignInWithGoogle({
-  setUser,
-}: {
-  setUser: (user: User | undefined) => void;
-}) {
-  const [signInWithGoogle, , loading, error] = useSignInWithGoogle(auth);
-
-  if (error) {
-    return (
-      <div>
-        <p>Error: {error.message}</p>
-      </div>
-    );
-  }
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+function SignInWithGoogle() {
+  const [signInWithGoogle] = useSignInWithGoogle(auth);
 
   return (
     <>
       <GoogleButton
         onClick={() => {
           signInWithGoogle()
-            .then((result) => {
-              if (result?.user) {
-                setUser(result.user);
-              }
-            })
+            .then()
             .catch((error: unknown) => {
               console.error(error);
             });
