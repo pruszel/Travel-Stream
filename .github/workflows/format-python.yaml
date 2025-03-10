@@ -1,4 +1,4 @@
-name: Check formatting
+name: Python formatting
 on: [push, pull_request]
 jobs:
   black:
