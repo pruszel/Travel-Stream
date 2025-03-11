@@ -18,5 +18,6 @@ jobs:
       - name: Run tests
         env:
           PYTHONPATH: backend
-          CI: "true"
+          CI: true
+          DJANGO_SETTINGS_MODULE: travel_stream.settings
         run: pytest --color=yes
