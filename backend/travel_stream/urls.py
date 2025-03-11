@@ -21,5 +21,9 @@ from django.http import JsonResponse
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("health_check/", lambda request: JsonResponse({"status": "ok"}), name="health_check"),
+    path(
+        "health_check/",
+        lambda request: JsonResponse({"status": "ok"}),
+        name="health_check",
+    ),
 ]
