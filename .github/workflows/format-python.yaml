@@ -1,4 +1,4 @@
-name: Python formatting
+name: Format Python
 on: [push, pull_request]
 jobs:
   black:
