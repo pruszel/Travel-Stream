@@ -25,7 +25,7 @@ docker exec travel-stream-backend pip install -r requirements-dev.txt
 ### Run tests
 
 ```bash
-docker exec travel-stream-backend pytest --color=yes
+docker exec travel-stream-backend pytest
 ```
 
 ### Run linter
