@@ -1,0 +1,5 @@
+.env
+.env.dist
+.flake8
+pytest.ini
+.pytest_cache

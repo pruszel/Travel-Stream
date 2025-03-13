@@ -21,4 +21,7 @@ jobs:
           PYTHONPATH: backend
           CI: true
           DJANGO_SETTINGS_MODULE: travel_stream.settings
-        run: pytest --color=yes
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DEBUG: False
+        run: pytest
