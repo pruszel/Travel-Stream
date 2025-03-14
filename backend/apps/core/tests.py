@@ -6,20 +6,18 @@ from .models import SampleBaseModel
 
 User = get_user_model()
 
+
 @pytest.fixture
 def user():
-    return User.objects.create_user(
-        username='testuser',
-        password='testpass123'
-    )
+    return User.objects.create_user(username="testuser", password="testpass123")
+
 
 @pytest.fixture
 def test_model(user):
     return SampleBaseModel.objects.create(
-        name='Test Instance',
-        created_by=user,
-        updated_by=user
+        name="Test Instance", created_by=user, updated_by=user
     )
+
 
 @pytest.mark.django_db
 def test_timestamps_on_creation(test_model):
@@ -31,15 +29,17 @@ def test_timestamps_on_creation(test_model):
     time_difference = abs(test_model.created_at - test_model.updated_at)
     assert time_difference.total_seconds() < 0.1  # 100ms
 
+
 @pytest.mark.django_db
 def test_updated_at_changes_on_update(test_model):
     """Test that updated_at changes when model is updated"""
     original_updated_at = test_model.updated_at
     # Wait a small amount of time to ensure timestamp will be different
     time.sleep(0.001)  # 1 millisecond
-    test_model.name = 'Updated Name'
+    test_model.name = "Updated Name"
     test_model.save()
     assert test_model.updated_at > original_updated_at
+
 
 @pytest.mark.django_db
 def test_soft_delete(test_model):
@@ -58,6 +58,7 @@ def test_soft_delete(test_model):
     # Verify object still exists in database
     assert SampleBaseModel.objects.filter(id=test_model.id).exists()
 
+
 @pytest.mark.django_db
 def test_restore(test_model):
     """Test restore functionality"""
@@ -72,6 +73,7 @@ def test_restore(test_model):
     assert not test_model.is_deleted
     assert test_model.deleted_at is None
 
+
 @pytest.mark.django_db
 def test_erase(test_model):
     """Test hard deletion functionality"""
@@ -81,6 +83,7 @@ def test_erase(test_model):
     # Verify object is actually deleted from database
     assert not SampleBaseModel.objects.filter(id=model_id).exists()
 
+
 @pytest.mark.django_db
 def test_user_tracking(test_model, user):
     """Test that created_by and updated_by are tracked correctly"""
@@ -89,10 +92,7 @@ def test_user_tracking(test_model, user):
     assert test_model.updated_by == user
 
     # Create a new user and update the model
-    new_user = User.objects.create_user(
-        username='newuser',
-        password='testpass123'
-    )
+    new_user = User.objects.create_user(username="newuser", password="testpass123")
     test_model.updated_by = new_user
     test_model.save()
 
