@@ -1,2 +1,4 @@
 [flake8]
 exclude = */migrations/*
+# 88 characters is the default max line length for black
+max-line-length = 88
