@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import environ
 from pathlib import Path
+from .utils import parse_comma_separated_str, parse_name_email_pair_str
 
 env = environ.Env(
     # set casting, default value
@@ -34,7 +35,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=parse_comma_separated_str, default=[])
 
 
 # Application definition
@@ -47,12 +48,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # third party apps
+    "corsheaders",
     # custom apps
     "apps.core",
     "apps.users",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -134,3 +138,13 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
+
+CORS_ALLOWED_ORIGINS = env(
+    "CORS_ALLOWED_ORIGINS", cast=parse_comma_separated_str, default=[]
+)
+
+CORS_ALLOW_CREDENTIALS = True
+
+ADMINS = env("ADMINS", cast=parse_name_email_pair_str, default=[])
+
+SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")

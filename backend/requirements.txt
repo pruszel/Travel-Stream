@@ -1,3 +1,4 @@
 Django~=5.1
+django-cors-headers~=4.7  # supports Django 5.2
 django-environ~=0.12  # supports Python 3.13
 psycopg~=3.2
