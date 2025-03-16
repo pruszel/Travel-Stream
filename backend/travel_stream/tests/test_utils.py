@@ -68,14 +68,18 @@ def test_parse_name_email_pair_str_valid(
         # Too many parts in one pair
         (
             "John Doe,john@example.com,extra;Jane Doe,jane@example.com",
-            ("Invalid name-email pair 'John Doe,john@example.com,extra'. "
-             "Each pair must have exactly two parts"),
+            (
+                "Invalid name-email pair 'John Doe,john@example.com,extra'. "
+                "Each pair must have exactly two parts"
+            ),
         ),
         # Empty parts
         (
             "John Doe,;Jane Doe,jane@example.com",
-            ("Invalid name-email pair 'John Doe,'. "
-             "Each pair must have exactly two parts"),
+            (
+                "Invalid name-email pair 'John Doe,'. "
+                "Each pair must have exactly two parts"
+            ),
         ),
         # Just commas
         (
