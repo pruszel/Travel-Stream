@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 import environ
 from pathlib import Path
+from .utils import parse_comma_separated_str, parse_name_email_pair_str
 
 env = environ.Env(
     # set casting, default value
@@ -34,7 +35,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=lambda v: [s.strip() for s in v.split(",")])
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", cast=parse_comma_separated_str)
 
 
 # Application definition
@@ -138,13 +139,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
-CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")])
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS", cast=parse_comma_separated_str)
 
 CORS_ALLOW_CREDENTIALS = True
 
-# Each item in the list should be a tuple of (Full name, email address).
-# Example:
-# [("John", "john@example.com"), ("Mary", "mary@example.com")]
-ADMINS = env("ADMINS", cast=lambda v: [tuple(s.split(",")) for s in v.split(";")])
+ADMINS = env("ADMINS", cast=parse_name_email_pair_str)
 
 SERVER_EMAIL = env("SERVER_EMAIL")
