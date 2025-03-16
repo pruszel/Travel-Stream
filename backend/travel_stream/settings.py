@@ -141,3 +141,10 @@ AUTH_USER_MODEL = "users.User"
 CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS", cast=lambda v: [s.strip() for s in v.split(",")])
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Each item in the list should be a tuple of (Full name, email address).
+# Example:
+# [("John", "john@example.com"), ("Mary", "mary@example.com")]
+ADMINS = env("ADMINS", cast=lambda v: [tuple(s.split(",")) for s in v.split(";")])
+
+SERVER_EMAIL = env("SERVER_EMAIL")
