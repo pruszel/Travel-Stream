@@ -145,4 +145,4 @@ CORS_ALLOW_CREDENTIALS = True
 
 ADMINS = env("ADMINS", cast=parse_name_email_pair_str, default=[])
 
-SERVER_EMAIL = env("SERVER_EMAIL")
+SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")
