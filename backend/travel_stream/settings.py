@@ -139,10 +139,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
 
-CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS", cast=parse_comma_separated_str)
+CORS_ALLOWED_ORIGINS = env("CORS_ALLOWED_ORIGINS", cast=parse_comma_separated_str, default=[])
 
 CORS_ALLOW_CREDENTIALS = True
 
-ADMINS = env("ADMINS", cast=parse_name_email_pair_str)
+ADMINS = env("ADMINS", cast=parse_name_email_pair_str, default=[])
 
 SERVER_EMAIL = env("SERVER_EMAIL")
