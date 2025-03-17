@@ -150,7 +150,7 @@ CSRF_TRUSTED_ORIGINS = env(
 )
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE", cast=bool, default=True)
+SESSION_COOKIE_SECURE = True  # requires HTTPS except on localhost
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_AGE = 43200  # 12 hours in seconds
