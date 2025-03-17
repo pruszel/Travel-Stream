@@ -18,12 +18,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
+from apps.core.views import test_post, get_csrf_token
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("csrf/", get_csrf_token, name="get_csrf_token"),
     path(
         "health_check/",
         lambda request: JsonResponse({"status": "ok"}),
         name="health_check",
     ),
+    path("test_post/", test_post, name="test_post"),
 ]
