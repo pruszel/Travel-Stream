@@ -149,10 +149,10 @@ CSRF_TRUSTED_ORIGINS = env(
     "CSRF_TRUSTED_ORIGINS", cast=parse_comma_separated_str, default=[]
 )
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 SESSION_COOKIE_SECURE = True  # requires HTTPS except on localhost
 SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_AGE = 43200  # 12 hours in seconds
 
 ADMINS = env("ADMINS", cast=parse_name_email_pair_str, default=[])
