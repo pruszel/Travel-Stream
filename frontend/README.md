@@ -13,7 +13,7 @@ cd ../
 # Build the image and run the container
 docker compose up frontend
 
-# Install development dependencies
+# Install dependencies
 docker compose exec frontend npm install
 ```
 
@@ -24,3 +24,16 @@ docker compose exec frontend npm install
 ```bash
 docker compose exec frontend npm run lint
 ```
+
+## Deployment
+
+The frontend is deployed automatically from GitHub to Cloudflare Pages using the [GitHub integration](https://developers.cloudflare.com/pages/configuration/git-integration/github-integration/).
+
+Deployments are triggered when changes in the "build watch paths" are pushed to the `main` branch. The build watch paths are configured as follows:
+
+- **Include:** `frontend/*`
+- **Exclude:** `*.md`, `Dockerfile`, `.dockerignore`, `.gitignore`
+
+For additional details on build watch paths, refer to the [Cloudflare docs](https://developers.cloudflare.com/pages/configuration/build-watch-paths/#build-watch-paths).
+
+The build configuration root directory is `/frontend` and the build output directory is `dist`. The build command is `npm run build`.
