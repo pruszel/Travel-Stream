@@ -1,4 +1,4 @@
-# This Dockerfile is used for deployment to Fly.io
+# This Dockerfile is used for development
 FROM python:3.13-alpine
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -16,13 +16,14 @@ RUN apk update && apk add --no-cache \
 
 # Install dependencies
 COPY requirements.txt /tmp/requirements.txt
+COPY requirements-dev.txt /tmp/requirements-dev.txt
 RUN set -ex && \
     pip install --upgrade pip && \
     pip install -r /tmp/requirements.txt && \
-    pip install gunicorn
+    pip install -r /tmp/requirements-dev.txt
 
 COPY . .
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "2", "travel_stream.wsgi"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
