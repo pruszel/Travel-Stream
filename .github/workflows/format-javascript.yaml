@@ -1,12 +1,8 @@
 name: Format JavaScript
 on:
   push:
-    paths:
-      - "frontend/**/*.ts"
-      - "frontend/**/*.tsx"
-      - "frontend/**/*.js"
-      - "frontend/**/*.jsx"
-      - "frontend/**/*.json"
+    branches:
+      - main
   pull_request:
     paths:
       - "frontend/**/*.ts"
