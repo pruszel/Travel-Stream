@@ -3,3 +3,5 @@
 .flake8
 pytest.ini
 .pytest_cache
+README.md
+fly.toml
