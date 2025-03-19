@@ -36,3 +36,9 @@ docker compose exec backend flake8
 ```bash
 docker compose exec backend black .
 ```
+
+## Deployment
+
+The backend is deployed automatically from GitHub to Fly.io using [flyctl-actions](https://github.com/superfly/flyctl-actions) which provides a wrapper for the Fly.io CLI for GitHub Actions.
+
+See the Github Actions workflow file in this repo at `.github/workflows/deploy-backend.yaml` for more details.
