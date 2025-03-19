@@ -164,7 +164,8 @@ if env("FLY_APP_NAME", default=None):
     # Redirect HTTP to HTTPS
     SECURE_SSL_REDIRECT = True
 
-    # Fly.io terminates SSL at its edge and forwards requests to your application over HTTP.
+    # Fly.io terminates SSL at its edge
+    # and forwards requests to your application over HTTP.
     # To make Django aware that the original request was made over HTTPS,
     # configure it to respect the X-Forwarded-Proto header
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
