@@ -1,5 +1,19 @@
 name: Format JavaScript
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "frontend/**/*.ts"
+      - "frontend/**/*.tsx"
+      - "frontend/**/*.js"
+      - "frontend/**/*.jsx"
+      - "frontend/**/*.json"
+  pull_request:
+    paths:
+      - "frontend/**/*.ts"
+      - "frontend/**/*.tsx"
+      - "frontend/**/*.js"
+      - "frontend/**/*.jsx"
+      - "frontend/**/*.json"
 jobs:
   prettier:
     runs-on: ubuntu-latest

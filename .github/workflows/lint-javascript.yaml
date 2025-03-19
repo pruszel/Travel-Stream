@@ -1,5 +1,19 @@
 name: Lint JavaScript
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "frontend/**/*.ts"
+      - "frontend/**/*.tsx"
+      - "frontend/**/*.js"
+      - "frontend/**/*.jsx"
+      - "frontend/**/*.json"
+  pull_request:
+    paths:
+      - "frontend/**/*.ts"
+      - "frontend/**/*.tsx"
+      - "frontend/**/*.js"
+      - "frontend/**/*.jsx"
+      - "frontend/**/*.json"
 jobs:
   eslint:
     runs-on: ubuntu-latest
