@@ -1,11 +1,11 @@
 name: Test Python
 on:
   push:
-    paths:
-      - "**/*.py"
+    branches:
+      - main
   pull_request:
     paths:
-      - "**/*.py"
+      - "backend/**/*.py"
 jobs:
   pytest:
     runs-on: ubuntu-latest
