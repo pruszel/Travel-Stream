@@ -12,9 +12,6 @@ cd ../
 
 # Build the image and run the container
 docker compose up backend
-
-# Install development dependencies
-docker compose exec backend pip install -r requirements-dev.txt
 ```
 
 ## Usage
