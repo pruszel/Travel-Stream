@@ -159,6 +159,9 @@ ADMINS = env("ADMINS", cast=parse_name_email_pair_str, default=[])
 
 SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")
 
+# Base64 encoded Firebase service account credentials JSON file
+GOOGLE_APPLICATION_CREDENTIALS = env("GOOGLE_APPLICATION_CREDENTIALS")
+
 # Fly.io specific settings
 if env("FLY_APP_NAME", default=None):
     # Redirect HTTP to HTTPS
