@@ -17,6 +17,8 @@
     "@tailwindcss/vite": "^4.0.14",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-firebase-hooks": "^5.1.1",
+    "react-google-button": "^0.8.0",
     "tailwindcss": "^4.0.14"
   },
   "devDependencies": {
