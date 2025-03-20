@@ -14,7 +14,8 @@ def _verify_token(firebase_token: str) -> dict | None:
         firebase_token: The Firebase ID token.
 
     Returns:
-        dict: If the token is valid, a dictionary of key-value pairs parsed from the decoded JWT.
+        dict: If the token is valid, a dictionary of key-value pairs
+            parsed from the decoded JWT.
         None: If the token is invalid or expired.
     """
     try:
@@ -34,10 +35,13 @@ def _verify_token(firebase_token: str) -> dict | None:
 class FirebaseAuthenticationBackend(BaseBackend):
     """
     Custom authentication backend for Firebase Authentication.
-    This backend verifies a Firebase ID token and either retrieves the associated user from the database or creates one.
+    This backend verifies a Firebase ID token and either retrieves the associated user
+    from the database or creates one.
     """
 
-    def authenticate(self, request: HttpRequest | None, firebase_token=None) -> User | None:
+    def authenticate(
+        self, request: HttpRequest | None, firebase_token=None
+    ) -> User | None:
         """
         Authenticate the user using the Firebase UID.
 

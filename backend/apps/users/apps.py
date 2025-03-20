@@ -37,11 +37,12 @@ class UsersConfig(AppConfig):
 
     @staticmethod
     def _decode_firebase_credentials(
-            encoded_credentials=settings.GOOGLE_APPLICATION_CREDENTIALS,
+        encoded_credentials=settings.GOOGLE_APPLICATION_CREDENTIALS,
     ):
         """
         Decode the base64 encoded Firebase service account credentials.
-        This was added to support using JSON-formatted Firebase credentials as an environment secret on Fly.io.
+        This was added to support using JSON-formatted Firebase credentials
+        as an environment secret on Fly.io.
 
         Args:
             encoded_credentials:
