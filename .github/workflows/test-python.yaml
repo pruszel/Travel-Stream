@@ -29,5 +29,6 @@ jobs:
           DJANGO_SETTINGS_MODULE: travel_stream.settings
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           DEBUG: False
         run: pytest
