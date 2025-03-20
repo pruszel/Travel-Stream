@@ -107,7 +107,9 @@ def test_parse_name_email_pair_str_valid(
         pytest.param(";;;", [], id="just semicolons"),
     ],
 )
-def test_parse_name_email_pair_str_invalid(input_str: str, error_message: str | list) -> None:
+def test_parse_name_email_pair_str_invalid(
+    input_str: str, error_message: str | list
+) -> None:
     """Test parse_name_email_pair_str function with invalid inputs."""
     if type(error_message) is list:  # Special case for valid but empty result
         assert parse_name_email_pair_str(input_str) == []
