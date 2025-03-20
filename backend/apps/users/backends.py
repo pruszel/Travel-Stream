@@ -63,6 +63,7 @@ class FirebaseAuthenticationBackend(BaseBackend):
 
         user, created = User.objects.get_or_create(firebase_uid=firebase_uid)
         if created:
+            user.email = decoded_token.get("email", "")
             user.set_unusable_password()
 
         user.last_login_at = timezone.now()
