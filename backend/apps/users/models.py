@@ -8,9 +8,10 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
-    last_login_at = models.DateTimeField(auto_now=True)
+    last_login_at = models.DateTimeField(null=True, blank=True)
     last_login_ip = models.GenericIPAddressField(null=True, blank=True)
     last_login_user_agent = models.CharField(max_length=255, null=True, blank=True)
+    firebase_uid = models.CharField(max_length=255, unique=True, null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]
