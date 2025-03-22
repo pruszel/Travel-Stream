@@ -1,20 +1,88 @@
 import "./App.css";
-import { useState } from "react";
+import GoogleButton from "react-google-button";
+import {
+  useSignInWithGoogle,
+  useAuthState,
+  useSignOut,
+} from "react-firebase-hooks/auth";
+import { auth } from "./firebase";
+import { User } from "firebase/auth";
 
 function App() {
-  const [buttonText, setButtonText] = useState("Click me");
-  const handleClick = () => {
-    setButtonText("Thanks!");
-  };
+  const [user, loading, error] = useAuthState(auth);
 
   return (
     <>
-      <h1 className="text-4xl font-bold">Hello, World!</h1>
-      <button className="mt-4 btn" onClick={handleClick}>
-        {buttonText}
-      </button>
+      <AuthDisplay user={user} loading={loading} error={error} />
     </>
   );
 }
+
+function AuthDisplay({
+  user,
+  loading,
+}: {
+  user: User | null | undefined;
+  loading: boolean;
+  error: Error | undefined;
+}) {
+  if (user) {
+    return (
+      <>
+        <div className="flex gap-8 items-center flex-col">
+          <UserGreeting user={user} />
+          <SignOutButton />
+        </div>
+      </>
+    );
+  }
+
+  if (loading) {
+    return;
+  }
+
+  return (
+    <>
+      <SignInWithGoogle />
+    </>
+  );
+}
+
+function UserGreeting({ user }: { user: User }) {
+  return (
+    <div>
+      <h1>Hello, {user.displayName}</h1>
+    </div>
+  );
+}
+
+function SignInWithGoogle() {
+  const [signInWithGoogle, , ,] = useSignInWithGoogle(auth);
+
+  return (
+    <>
+      <GoogleButton
+        onClick={() => {
+          void signInWithGoogle();
+        }}
+      />
+    </>
+  );
+}
+
+const SignOutButton = () => {
+  const [signOut, ,] = useSignOut(auth);
+
+  return (
+    <button
+      type={"button"}
+      onClick={() => {
+        void signOut();
+      }}
+    >
+      Sign Out
+    </button>
+  );
+};
 
 export default App;
