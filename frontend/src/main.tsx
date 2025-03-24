@@ -10,6 +10,7 @@ export function getRootElById(
   return document.getElementById(id);
 }
 
+/* istanbul ignore next */
 function initializeReact(rootEl: HTMLElement) {
   createRoot(rootEl).render(
     <StrictMode>
@@ -32,6 +33,7 @@ export function main(document: Document | undefined) {
 }
 
 // Only run in browser environment, not during testing
+/* istanbul ignore next */
 if (typeof window !== "undefined" && !import.meta.env.TEST) {
   try {
     main(document);
