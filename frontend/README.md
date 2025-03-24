@@ -19,10 +19,28 @@ docker compose exec frontend npm install
 
 ## Usage
 
+### Run tests
+
+```bash
+docker compose exec frontend npm run test
+```
+
+### Generate coverage report
+
+```bash
+docker compose exec frontend npm run coverage
+```
+
 ### Run linter
 
 ```bash
 docker compose exec frontend npm run lint
+```
+
+### Run formatter
+
+```bash
+docker compose exec frontend npm run prettier:fix
 ```
 
 ## Deployment
