@@ -1,5 +1,9 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import { initializeApp, FirebaseApp } from "firebase/app";
+import { Auth } from "firebase/auth";
+import {
+  getAnalytics,
+  isSupported as isAnalyticsSupported,
+} from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
@@ -12,9 +16,12 @@ const firebaseConfig = {
   measurementId: "G-LGT73Z8SLV",
 };
 
-const app = initializeApp(firebaseConfig);
-getAnalytics(app);
+const app: FirebaseApp = initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
+if (await isAnalyticsSupported()) {
+  getAnalytics(app);
+}
+
+const auth: Auth = getAuth(app);
 
 export { auth };
