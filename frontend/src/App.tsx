@@ -6,6 +6,7 @@ import { auth } from "@user/utils/firebase";
 import { User } from "firebase/auth";
 import {SignOutButton} from "@user/components/SignOutButton.tsx";
 import {SignInWithGoogle} from "@user/components/SignInWithGoogle.tsx";
+import { UserGreeting } from "@user/components/UserGreeting";
 
 function App() {
   const [user, loading, error] = useAuthState(auth);
@@ -46,14 +47,5 @@ function AuthDisplay({
     </>
   );
 }
-
-function UserGreeting({ user }: { user: User }) {
-  return (
-    <div>
-      <h1>Hello, {user.displayName}</h1>
-    </div>
-  );
-}
-
 
 export default App;
