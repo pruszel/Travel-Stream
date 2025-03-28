@@ -1,12 +1,11 @@
 import "./App.css";
-import GoogleButton from "react-google-button";
 import {
-  useSignInWithGoogle,
   useAuthState,
 } from "react-firebase-hooks/auth";
 import { auth } from "@user/utils/firebase";
 import { User } from "firebase/auth";
 import {SignOutButton} from "@user/components/SignOutButton.tsx";
+import {SignInWithGoogle} from "@user/components/SignInWithGoogle.tsx";
 
 function App() {
   const [user, loading, error] = useAuthState(auth);
@@ -53,20 +52,6 @@ function UserGreeting({ user }: { user: User }) {
     <div>
       <h1>Hello, {user.displayName}</h1>
     </div>
-  );
-}
-
-function SignInWithGoogle() {
-  const [signInWithGoogle, , ,] = useSignInWithGoogle(auth);
-
-  return (
-    <>
-      <GoogleButton
-        onClick={() => {
-          void signInWithGoogle();
-        }}
-      />
-    </>
   );
 }
 
