@@ -5,7 +5,7 @@ import {
   useAuthState,
   useSignOut,
 } from "react-firebase-hooks/auth";
-import { auth } from "./firebase";
+import { auth } from "@user/utils/firebase";
 import { User } from "firebase/auth";
 
 function App() {
