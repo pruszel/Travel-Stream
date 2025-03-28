@@ -3,10 +3,10 @@ import GoogleButton from "react-google-button";
 import {
   useSignInWithGoogle,
   useAuthState,
-  useSignOut,
 } from "react-firebase-hooks/auth";
 import { auth } from "@user/utils/firebase";
 import { User } from "firebase/auth";
+import {SignOutButton} from "@user/components/SignOutButton.tsx";
 
 function App() {
   const [user, loading, error] = useAuthState(auth);
@@ -70,19 +70,5 @@ function SignInWithGoogle() {
   );
 }
 
-const SignOutButton = () => {
-  const [signOut, ,] = useSignOut(auth);
-
-  return (
-    <button
-      type={"button"}
-      onClick={() => {
-        void signOut();
-      }}
-    >
-      Sign Out
-    </button>
-  );
-};
 
 export default App;
