@@ -1,3 +1,7 @@
+/* istanbul ignore file */
+
+// firebase.ts
+
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { Auth } from "firebase/auth";
 import {
