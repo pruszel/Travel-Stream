@@ -1,20 +1,16 @@
-import "./App.css";
-import { useState } from "react";
+// App.tsx
 
-function App() {
-  const [buttonText, setButtonText] = useState("Click me");
-  const handleClick = () => {
-    setButtonText("Thanks!");
-  };
+import "./App.css";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@user/utils/firebase";
+import { AuthDisplay } from "@user/components/AuthDisplay.tsx";
+
+export function App() {
+  const [user, loading, error] = useAuthState(auth);
 
   return (
     <>
-      <h1 className="text-4xl font-bold">Hello, World!</h1>
-      <button className="mt-4 btn" onClick={handleClick}>
-        {buttonText}
-      </button>
+      <AuthDisplay user={user} loading={loading} error={error} />
     </>
   );
 }
-
-export default App;
