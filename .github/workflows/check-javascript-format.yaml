@@ -1,4 +1,4 @@
-name: Test JavaScript
+name: Check JavaScript Formatting
 on:
   push:
     branches:
@@ -10,19 +10,17 @@ on:
       - "frontend/**/*.js"
       - "frontend/**/*.jsx"
       - "frontend/**/*.json"
+      - ".github/workflows/check-javascript-format.yaml"
 jobs:
-  vitest:
+  prettier:
     runs-on: ubuntu-latest
+    container: node:22-alpine
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
       - name: Install dependencies
         working-directory: ./frontend
         run: npm ci
-      - name: Run Vitest
+      - name: Run Prettier
         working-directory: ./frontend
-        run: npm run test
+        run: npm run prettier:check
