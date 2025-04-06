@@ -3,10 +3,14 @@
 import "./App.css";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@user/utils/firebase";
-import { AuthDisplay } from "@user/components/AuthDisplay.tsx";
+import { AuthDisplay } from "@user/components/AuthDisplay";
+import { useBackendAuth } from "@user/hooks/useBackendAuth";
 
 export function App() {
-  const [user, loading, error] = useAuthState(auth);
+  const { handleFirebaseUserChange } = useBackendAuth();
+  const [user, loading, error] = useAuthState(auth, {
+    onUserChanged: handleFirebaseUserChange,
+  });
 
   return (
     <>
