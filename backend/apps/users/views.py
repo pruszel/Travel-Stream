@@ -1,7 +1,23 @@
 from django.contrib.auth import authenticate, logout
 from django.shortcuts import render  # noqa: F401
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_safe
 from django.http import HttpRequest, JsonResponse
+
+
+@require_safe
+def session_view(request: HttpRequest) -> JsonResponse:
+    """
+    Handle the request to check if a valid session exists.
+
+    Args:
+        request:
+               The HTTP request object.
+    Returns:
+        JsonResponse:
+            A JSON response indicating whether the user is authenticated.
+    """
+    status = 200 if request.user.is_authenticated else 401
+    return JsonResponse({}, status=status)
 
 
 @require_POST
