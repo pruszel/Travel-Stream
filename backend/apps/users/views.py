@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, logout
 from django.shortcuts import render  # noqa: F401
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_safe
 from django.http import HttpRequest, JsonResponse
 
@@ -20,6 +21,7 @@ def session_view(request: HttpRequest) -> JsonResponse:
     return JsonResponse({}, status=status)
 
 
+@csrf_exempt
 @require_POST
 def login_view(request: HttpRequest) -> JsonResponse:
     """
