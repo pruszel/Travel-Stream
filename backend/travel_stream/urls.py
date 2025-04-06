@@ -24,7 +24,7 @@ from apps.users.views import login_view, logout_view, session_view
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("csrf/", get_csrf_token, name="get_csrf_token"),
-    path("users/session", session_view, name="session"),
+    path("users/session/", session_view, name="session"),
     path("users/login/", login_view, name="login"),
     path("users/logout/", logout_view, name="logout"),
     path(
