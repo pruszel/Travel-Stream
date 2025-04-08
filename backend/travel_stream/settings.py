@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # third party apps
     "corsheaders",
+    "rest_framework",
     # custom apps
     "apps.core",
     "apps.users",
@@ -163,6 +164,16 @@ SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")
 GOOGLE_APPLICATION_CREDENTIALS = env("GOOGLE_APPLICATION_CREDENTIALS")
 
 AUTHENTICATION_BACKENDS = ["apps.users.backends.FirebaseAuthenticationBackend"]
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "apps.users.authentication.FirebaseAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
 
 # Fly.io specific settings
 if env("FLY_APP_NAME", default=None):

@@ -3,3 +3,6 @@ django-cors-headers~=4.7  # supports Django 5.2
 django-environ~=0.12  # supports Python 3.13
 firebase-admin
 psycopg~=3.2
+djangorestframework
+markdown
+django-filter
