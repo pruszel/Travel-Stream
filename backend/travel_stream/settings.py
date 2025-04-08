@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # custom apps
     "apps.core",
     "apps.users",
+    "apps.trips",
 ]
 
 MIDDLEWARE = [
