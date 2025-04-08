@@ -1,9 +1,9 @@
 // AuthDisplay.tsx
 
 import { User } from "firebase/auth";
-import { UserGreeting } from "@user/components/UserGreeting.tsx";
-import { SignOutButton } from "@user/components/SignOutButton.tsx";
-import { SignInWithGoogle } from "@user/components/SignInWithGoogle.tsx";
+import { UserGreeting } from "@/user/components/UserGreeting.tsx";
+import { SignOutButton } from "@/user/components/SignOutButton.tsx";
+import { SignInWithGoogle } from "@/user/components/SignInWithGoogle.tsx";
 
 export function AuthDisplay({
   user,
