@@ -41,10 +41,11 @@ class IsOwnerPermissionTest(TestCase):
 
         # Create an unauthenticated request
         self.factory = APIRequestFactory()
-        self.anon_request = self.factory.get('/dummy/')
+        self.anon_request = self.factory.get("/dummy/")
         # In Django REST Framework, AnonymousUser is typically added by middleware
         # We need to simulate this in our tests
         from django.contrib.auth.models import AnonymousUser
+
         self.anon_request.user = AnonymousUser()
 
         # Create authenticated requests
