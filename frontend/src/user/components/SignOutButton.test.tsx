@@ -2,7 +2,7 @@
 
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
-import { SignOutButton } from "@user/components/SignOutButton";
+import { SignOutButton } from "@/user/components/SignOutButton";
 import * as reactFirebaseHooksAuth from "react-firebase-hooks/auth";
 
 describe("SignOutButton", () => {

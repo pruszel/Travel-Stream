@@ -1,7 +1,7 @@
 // SignOutButton.tsx
 
 import { useSignOut } from "react-firebase-hooks/auth";
-import { auth } from "@user/utils/firebase";
+import { auth } from "@/user/utils/firebase";
 
 export function SignOutButton() {
   const [signOut, ,] = useSignOut(auth);
