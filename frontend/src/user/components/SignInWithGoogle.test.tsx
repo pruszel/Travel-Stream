@@ -2,7 +2,7 @@
 
 import { describe, it, afterEach, expect, vi } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
-import { SignInWithGoogle } from "@/user/components/SignInWithGoogle";
+import { SignInWithGoogle } from "@user/components/SignInWithGoogle";
 import * as reactFirebaseHooksAuth from "react-firebase-hooks/auth";
 import { UserCredential } from "firebase/auth";
 
