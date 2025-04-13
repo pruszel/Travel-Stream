@@ -12,7 +12,7 @@ on:
       - "frontend/**/*.json"
       - ".github/workflows/check-javascript-lint.yaml"
 jobs:
-  eslint:
+  check-lint:
     runs-on: ubuntu-latest
     container: node:22-alpine
     steps:
