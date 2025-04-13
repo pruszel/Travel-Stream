@@ -21,11 +21,17 @@ const firebaseConfig = {
 };
 
 const app: FirebaseApp = initializeApp(firebaseConfig);
-
-if (await isAnalyticsSupported()) {
-  getAnalytics(app);
-}
-
 const auth: Auth = getAuth(app);
+
+// Initialize analytics if supported
+isAnalyticsSupported()
+  .then((isSupported) => {
+    if (isSupported) {
+      getAnalytics(app);
+    }
+  })
+  .catch((error: unknown) => {
+    console.error("Analytics initialization error:", error);
+  });
 
 export { auth };
