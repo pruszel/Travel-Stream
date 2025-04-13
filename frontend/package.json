@@ -47,9 +47,9 @@
     "vitest": "^3.0.8"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-musl": "^4.38.0",
-    "@swc/core-linux-x64-musl": "^1.11.13",
-    "@tailwindcss/oxide-linux-x64-musl": "^4.0.17",
-    "lightningcss-linux-x64-musl": "^1.29.3"
+    "@rollup/rollup-linux-x64-gnu": "^4.38.0",
+    "@swc/core-linux-x64-gnu": "^1.11.13",
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.0.17",
+    "lightningcss-linux-x64-gnu": "^1.29.3"
   }
 }
