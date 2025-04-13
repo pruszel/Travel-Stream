@@ -2,7 +2,7 @@
 
 import { describe, it, afterEach, expect } from "vitest";
 import { render, screen, cleanup } from "@testing-library/react";
-import { UserGreeting } from "@/user/components/UserGreeting";
+import { UserGreeting } from "@user/components/UserGreeting";
 import { User } from "firebase/auth";
 
 describe("UserGreeting", () => {
