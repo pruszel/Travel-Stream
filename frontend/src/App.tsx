@@ -89,7 +89,7 @@ export function AuthDisplay({
   }
 
   if (authStateLoading || authError) {
-    return;
+    return null;
   }
 
   return (
