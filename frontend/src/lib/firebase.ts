@@ -1,11 +1,12 @@
 /* istanbul ignore file */
 
-// firebase.ts
+// frontend/src/lib/firebase.ts
 
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { Auth } from "firebase/auth";
 import {
   getAnalytics,
+  Analytics,
   isSupported as isAnalyticsSupported,
 } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
@@ -20,18 +21,24 @@ const firebaseConfig = {
   measurementId: "G-LGT73Z8SLV",
 };
 
-const app: FirebaseApp = initializeApp(firebaseConfig);
-const auth: Auth = getAuth(app);
+export const app: FirebaseApp = initializeApp(firebaseConfig);
+export const auth: Auth = getAuth(app);
+let analyticsInstance: Analytics | undefined;
 
-// Initialize analytics if supported
-isAnalyticsSupported()
-  .then((isSupported) => {
+export async function initializeAnalytics() {
+  try {
+    const isSupported = await isAnalyticsSupported();
     if (isSupported) {
-      getAnalytics(app);
+      analyticsInstance = getAnalytics(app);
+      console.log(`Firebase Analytics initialized`);
     }
-  })
-  .catch((error: unknown) => {
+    return analyticsInstance;
+  } catch (error) {
     console.error("Analytics initialization error:", error);
-  });
+    return undefined;
+  }
+}
 
-export { auth };
+export function getFirebaseAnalytics(): Analytics | undefined {
+  return analyticsInstance;
+}
