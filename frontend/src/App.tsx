@@ -1,6 +1,7 @@
 // frontend/src/App.tsx
 
 import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router";
 import {
   useAuthState,
   useSignInWithGoogle,
@@ -22,8 +23,6 @@ const LD_CLIENT_ID = import.meta.env.PROD
   : `67f0bff500b7a80955249fc6`;
 
 export function App() {
-  const [firebaseUser, authStateLoading, authError] = useAuthState(auth);
-
   // Initialize Firebase Analytics
   useEffect(() => {
     void initializeAnalytics();
@@ -31,14 +30,27 @@ export function App() {
 
   return (
     <>
-      <LDProvider clientSideID={LD_CLIENT_ID}>
-        <AuthDisplay
-          firebaseUser={firebaseUser}
-          authStateLoading={authStateLoading}
-          authError={authError}
-        />
-      </LDProvider>
+      <BrowserRouter>
+        <LDProvider clientSideID={LD_CLIENT_ID}>
+          <Routes>
+            <Route path="/" element={<IndexPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </LDProvider>
+      </BrowserRouter>
     </>
+  );
+}
+
+function IndexPage() {
+  const [firebaseUser, authStateLoading, authError] = useAuthState(auth);
+
+  return (
+    <AuthDisplay
+      firebaseUser={firebaseUser}
+      authStateLoading={authStateLoading}
+      authError={authError}
+    />
   );
 }
 
@@ -53,8 +65,8 @@ export function AuthDisplay({
   authStateLoading,
   authError,
 }: AuthDisplayProps) {
-  const [signInWithGoogle, , ,] = useSignInWithGoogle(auth);
-  const [signOut, ,] = useSignOut(auth);
+  const [signInWithGoogle] = useSignInWithGoogle(auth);
+  const [signOut] = useSignOut(auth);
   const { killSwitchEnableGoogleSignIn } = useFlags();
 
   const handleGoogleButtonClick = () => {
@@ -98,5 +110,14 @@ export function AuthDisplay({
         <GoogleButton onClick={handleGoogleButtonClick} />
       )}
     </>
+  );
+}
+
+function NotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <h1 className="text-4xl font-bold mb-4">404</h1>
+      <p className="text-xl">Page not found</p>
+    </div>
   );
 }
