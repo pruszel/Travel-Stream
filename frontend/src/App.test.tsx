@@ -9,7 +9,7 @@ describe("AuthDisplay", () => {
     const { container } = render(
       <AuthDisplay
         firebaseUser={null}
-        authStateLoading={false}
+        isAuthStateLoading={false}
         authError={undefined}
       />,
     );

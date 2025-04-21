@@ -1,26 +1,23 @@
 // frontend/src/App.tsx
 
 import "./App.css";
+
 import { BrowserRouter, Routes, Route } from "react-router";
-import {
-  useAuthState,
-  useSignInWithGoogle,
-  useSignOut,
-} from "react-firebase-hooks/auth";
-import {
-  auth,
-  initializeAnalytics,
-  getFirebaseAnalytics,
-} from "@/lib/firebase";
-import { logEvent } from "firebase/analytics";
-import { User } from "firebase/auth";
-import GoogleButton from "react-google-button";
+import { initializeAnalytics } from "@/lib/firebase";
 import { LDProvider, useFlags } from "launchdarkly-react-client-sdk";
 import { useEffect } from "react";
 
-const LD_CLIENT_ID = import.meta.env.PROD
-  ? `67f0bff500b7a80955249fc7`
-  : `67f0bff500b7a80955249fc6`;
+import { LD_CLIENT_ID } from "@/constants.ts";
+import { AuthProvider } from "@/contexts/authProvider.tsx";
+import { TripsLayout } from "@/layouts/TripsLayout.tsx";
+import { IndexPage } from "@/pages/IndexPage.tsx";
+import { LoginPage } from "@/pages/LoginPage.tsx";
+import { TripListPage } from "@/pages/TripListPage";
+import { TripNewPage } from "@/pages/TripNewPage";
+import { TripEditPage } from "@/pages/TripEditPage";
+import { MaintenancePage } from "@/pages/MaintenancePage.tsx";
+import { TripShowPage } from "@/pages/TripShowPage.tsx";
+import { NotFoundPage } from "@/pages/NotFoundPage.tsx";
 
 export function App() {
   // Initialize Firebase Analytics
@@ -28,96 +25,38 @@ export function App() {
     void initializeAnalytics();
   }, []);
 
+  // Render maintenance page if the feature flag is enabled
+  const { maintenanceModeEnabled } = useFlags();
+  if (maintenanceModeEnabled) {
+    return <MaintenancePage />;
+  }
+
   return (
     <>
       <BrowserRouter>
         <LDProvider clientSideID={LD_CLIENT_ID}>
-          <Routes>
-            <Route path="/" element={<IndexPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<IndexPage />} />
+              <Route path="/login" element={<LoginPage />} />
+
+              <Route element={<TripsLayout />}>
+                {/* List all trips */}
+                <Route path="/trips" element={<TripListPage />} />
+                {/* Show trip creation form */}
+                <Route path="/trips/new" element={<TripNewPage />} />
+                {/* Show single trip */}
+                <Route path="/trips/:id" element={<TripShowPage />} />
+                {/* Show trip edit form */}
+                <Route path="/trips/:id/edit" element={<TripEditPage />} />
+                <Route path="/trips/*" element={<NotFoundPage />} />
+              </Route>
+
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </AuthProvider>
         </LDProvider>
       </BrowserRouter>
     </>
-  );
-}
-
-function IndexPage() {
-  const [firebaseUser, authStateLoading, authError] = useAuthState(auth);
-
-  return (
-    <AuthDisplay
-      firebaseUser={firebaseUser}
-      authStateLoading={authStateLoading}
-      authError={authError}
-    />
-  );
-}
-
-interface AuthDisplayProps {
-  firebaseUser: User | null | undefined;
-  authStateLoading: boolean;
-  authError: Error | undefined;
-}
-
-export function AuthDisplay({
-  firebaseUser,
-  authStateLoading,
-  authError,
-}: AuthDisplayProps) {
-  const [signInWithGoogle] = useSignInWithGoogle(auth);
-  const [signOut] = useSignOut(auth);
-  const { killSwitchEnableGoogleSignIn } = useFlags();
-
-  const handleGoogleButtonClick = () => {
-    async function performSignIn() {
-      const user = await signInWithGoogle();
-      if (user) {
-        const analytics = getFirebaseAnalytics();
-        if (!analytics) return;
-        logEvent(analytics, "login", { method: "Google" });
-      }
-    }
-
-    void performSignIn();
-  };
-
-  if (firebaseUser) {
-    return (
-      <>
-        <div className="flex gap-8 items-center flex-row">
-          <p>Hello, {firebaseUser.displayName}</p>
-          <button
-            type={"button"}
-            onClick={() => {
-              void signOut();
-            }}
-          >
-            Sign Out
-          </button>
-        </div>
-      </>
-    );
-  }
-
-  if (authStateLoading || authError) {
-    return null;
-  }
-
-  return (
-    <>
-      {killSwitchEnableGoogleSignIn && (
-        <GoogleButton onClick={handleGoogleButtonClick} />
-      )}
-    </>
-  );
-}
-
-function NotFound() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-4xl font-bold mb-4">404</h1>
-      <p className="text-xl">Page not found</p>
-    </div>
   );
 }
