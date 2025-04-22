@@ -56,7 +56,7 @@ class TestSampleBaseModel:
         assert test_model.is_deleted
         assert test_model.deleted_at is not None
         # Verify object still exists in database
-        assert SampleBaseModel.objects.filter(id=test_model.id).exists()
+        assert SampleBaseModel.all_objects.filter(id=test_model.id).exists()
 
     @pytest.mark.django_db
     def test_restore(self, test_model):
@@ -96,3 +96,42 @@ class TestSampleBaseModel:
         # Verify created_by remains unchanged while updated_by changes
         assert test_model.created_by == user
         assert test_model.updated_by == new_user
+
+
+class TestActiveManager:
+
+    @pytest.mark.django_db
+    def test_active_manager_excludes_deleted(self, test_model):
+        """Test that ActiveManager excludes soft-deleted objects"""
+        # Ensure the object is initially returned by the default manager
+        assert SampleBaseModel.objects.filter(id=test_model.id).exists()
+
+        # Soft delete the object
+        test_model.delete()
+
+        # Ensure the object is excluded by the default manager
+        assert not SampleBaseModel.objects.filter(id=test_model.id).exists()
+
+        # Ensure the object is still returned by all_objects
+        assert SampleBaseModel.all_objects.filter(id=test_model.id).exists()
+
+    @pytest.mark.django_db
+    def test_active_manager_includes_active(self, test_model):
+        """Test that ActiveManager includes only active objects"""
+        # Ensure the object is returned by the default manager
+        assert SampleBaseModel.objects.filter(id=test_model.id).exists()
+
+        # Ensure the object is also returned by all_objects
+        assert SampleBaseModel.all_objects.filter(id=test_model.id).exists()
+
+    @pytest.mark.django_db
+    def test_restore_includes_in_active_manager(self, test_model):
+        """Test that restoring a soft-deleted object includes it in ActiveManager"""
+        # Soft delete the object
+        test_model.delete()
+
+        # Restore the object
+        test_model.restore()
+
+        # Ensure the object is included in the default manager again
+        assert SampleBaseModel.objects.filter(id=test_model.id).exists()

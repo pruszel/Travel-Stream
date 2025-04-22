@@ -18,8 +18,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.http import JsonResponse
+from rest_framework.routers import DefaultRouter
 from apps.core.views import test_post, get_csrf_token
 from apps.users.views import login_view, logout_view
+from apps.trips.views import TripViewSet
+
+router = DefaultRouter()
+router.register(r"trips", TripViewSet, basename="trip")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -33,3 +38,5 @@ urlpatterns = [
     ),
     path("test_post/", test_post, name="test_post"),
 ]
+
+urlpatterns += router.urls
