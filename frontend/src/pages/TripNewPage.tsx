@@ -4,7 +4,7 @@ import * as React from "react";
 import { useCallback, useContext } from "react";
 import { useNavigate } from "react-router";
 
-import { createTrip } from "@/utils/tripService.ts";
+import { BaseTrip, createTrip } from "@/utils/tripService.ts";
 import { ToastContext } from "@/contexts/toastContext.ts";
 import { convertFormDataToStringSafely } from "@/utils/utils.ts";
 import { AuthContext } from "@/contexts/authContext.ts";
@@ -36,19 +36,7 @@ function AddTripForm() {
       }
 
       const formData = new FormData(event.currentTarget);
-      const newTrip = {
-        name: convertFormDataToStringSafely(formData.get("trip-name")),
-        description: convertFormDataToStringSafely(
-          formData.get("trip-description"),
-        ),
-        destination: convertFormDataToStringSafely(
-          formData.get("trip-destination"),
-        ),
-        start_date: convertFormDataToStringSafely(
-          formData.get("trip-start-date"),
-        ),
-        end_date: convertFormDataToStringSafely(formData.get("trip-end-date")),
-      };
+      const newTrip = addTripFormData(formData);
 
       const handleTripCreation = async () => {
         const token = await firebaseUser.getIdToken();
@@ -62,7 +50,7 @@ function AddTripForm() {
 
       void handleTripCreation();
     },
-    [firebaseUser, addToast],
+    [firebaseUser, addToast, navigate],
   );
 
   return (
@@ -150,4 +138,18 @@ function AddTripForm() {
       </form>
     </>
   );
+}
+
+function addTripFormData(formData: FormData): BaseTrip {
+  return {
+    name: convertFormDataToStringSafely(formData.get("trip-name")),
+    description: convertFormDataToStringSafely(
+      formData.get("trip-description"),
+    ),
+    destination: convertFormDataToStringSafely(
+      formData.get("trip-destination"),
+    ),
+    start_date: convertFormDataToStringSafely(formData.get("trip-start-date")),
+    end_date: convertFormDataToStringSafely(formData.get("trip-end-date")),
+  };
 }
