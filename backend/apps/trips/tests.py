@@ -99,7 +99,9 @@ class TestTripSerializer:
     def test_create_adds_user_as_created_by(
         self, user, trip_data, trip, api_request_factory
     ):
-        """Test that the TripSerializer adds the user from the request as the created_by field."""
+        """Test that the TripSerializer adds the user
+        from the request as the created_by field.
+        """
         # Create a request with a user
         request = api_request_factory.post("/api/trips/")
         request.user = user

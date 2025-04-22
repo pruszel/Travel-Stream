@@ -8,14 +8,20 @@ class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = [
-            'id', 'name', 'description', 'destination',
-            'start_date', 'end_date', 'created_at', 'updated_at'
+            "id",
+            "name",
+            "description",
+            "destination",
+            "start_date",
+            "end_date",
+            "created_at",
+            "updated_at",
         ]
-        read_only_fields = ['created_at', 'updated_at', 'created_by']
+        read_only_fields = ["created_at", "updated_at", "created_by"]
 
     def create(self, validated_data):
         # Get the current user from the request
-        user = self.context['request'].user
+        user = self.context["request"].user
         # Add the user as created_by
-        validated_data['created_by'] = user
+        validated_data["created_by"] = user
         return super().create(validated_data)
