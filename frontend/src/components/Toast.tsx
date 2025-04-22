@@ -13,7 +13,7 @@ export function Toast() {
     info: "alert-info",
   };
 
-  if (!context?.toasts.length) return null;
+  if (!context.toasts.length) return null;
 
   return (
     <div className="toast">

@@ -25,8 +25,12 @@ const defaultToasts: Toast[] = [];
 
 const defaultToastContext: ToastContextType = {
   toasts: defaultToasts,
-  addToast: () => {},
-  removeToast: () => {},
+  addToast: () => {
+    return;
+  },
+  removeToast: () => {
+    return;
+  },
 };
 
 export const ToastContext =

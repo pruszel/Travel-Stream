@@ -6,43 +6,43 @@
 
 /* Light mode variant */
 @custom-variant light {
-    @media (prefers-color-scheme: light) {
-        /*noinspection CssInvalidAtRule*/
-        @slot
-    }
+  @media (prefers-color-scheme: light) {
+    /*noinspection CssInvalidAtRule*/
+    @slot;
+  }
 }
 
 /* Device that supports hover */
 @custom-variant can-hover {
-    @media (hover: hover) {
-        /* supress the following inspection rule until JetBrains CSS plugin is fixed */
-        /*noinspection CssInvalidAtRule*/
-        @slot
-    }
+  @media (hover: hover) {
+    /* supress the following inspection rule until JetBrains CSS plugin is fixed */
+    /*noinspection CssInvalidAtRule*/
+    @slot;
+  }
 }
 
 :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @media (prefers-color-scheme: light) {
-    :root {
-        color: #213547;
-        background-color: #ffffff;
-    }
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
 }
 
 body {
-    margin: 0;
-    min-width: 320px;
-    min-height: 100vh;
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
 }
