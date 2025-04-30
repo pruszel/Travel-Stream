@@ -15,7 +15,7 @@ export function IndexPage() {
   // Redirect to /trips if the user is authenticated
   useEffect(() => {
     if (firebaseUser) {
-      navigate("/trips", { replace: true });
+      void navigate("/trips", { replace: true });
     }
   }, [firebaseUser, navigate]);
 

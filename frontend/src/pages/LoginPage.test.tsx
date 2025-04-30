@@ -26,7 +26,7 @@ import * as tripService from "@/utils/tripService.ts";
 import * as firebaseAnalytics from "firebase/analytics";
 
 // Mock the LaunchDarkly useFlags hook
-vi.mock("launchdarkly-react-client-sdk", async () => {
+vi.mock("launchdarkly-react-client-sdk", () => {
   return {
     useFlags: vi.fn(),
   };
@@ -42,7 +42,7 @@ vi.mock("firebase/analytics", async () => {
 });
 
 // Mock Firebase lib
-vi.mock("@/lib/firebase", async () => {
+vi.mock("@/lib/firebase", () => {
   return {
     getFirebaseAnalytics: vi.fn(),
   };
