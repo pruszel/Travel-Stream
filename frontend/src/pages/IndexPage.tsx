@@ -1,15 +1,26 @@
 // frontend/src/pages/IndexPage.tsx
 
-import { useContext } from "react";
-import { Link, Navigate } from "react-router";
+import { useContext, useEffect } from "react";
+import { Link, useNavigate } from "react-router";
 import { LogIn } from "lucide-react";
 
 import { AuthContext } from "@/contexts/authContext";
 
+export const SIGN_IN_TEXT = "Sign in";
+
 export function IndexPage() {
   const { firebaseUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // Redirect to /trips if the user is authenticated
+  useEffect(() => {
+    if (firebaseUser) {
+      navigate("/trips", { replace: true });
+    }
+  }, [firebaseUser, navigate]);
+
   if (firebaseUser) {
-    return <Navigate to="/trips" replace />;
+    return null;
   }
 
   return (
@@ -19,7 +30,7 @@ export function IndexPage() {
           <div className="max-w-md">
             <Link to="/login" className="btn btn-primary gap-2">
               <LogIn />
-              Sign In
+              {SIGN_IN_TEXT}
             </Link>
           </div>
         </div>
