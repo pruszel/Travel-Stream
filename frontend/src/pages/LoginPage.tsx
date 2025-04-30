@@ -1,20 +1,20 @@
 // frontend/src/pages/LoginPage.tsx
 
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useNavigate } from "react-router";
-import { useAuthState, useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { useFlags } from "launchdarkly-react-client-sdk";
 import { logEvent } from "firebase/analytics";
 import GoogleButton from "react-google-button";
 
-import { auth, getFirebaseAnalytics } from "@/lib/firebase.ts";
+import { getFirebaseAnalytics } from "@/lib/firebase.ts";
+import { AuthContext } from "@/contexts/authContext";
 
 export function LoginPage() {
-  const [firebaseUser, isAuthStateLoading] = useAuthState(auth);
-  const [signInWithGoogle] = useSignInWithGoogle(auth);
+  const { firebaseUser, isAuthStateLoading, signInWithGoogle } = useContext(AuthContext);
   const navigate = useNavigate();
   const { killSwitchEnableGoogleSignIn } = useFlags();
 
+  // Redirect to Index Page if user is already authenticated
   useEffect(() => {
     if (firebaseUser) {
       void navigate("/");
