@@ -41,7 +41,7 @@ export function TripsLayout() {
 
         <ContentWrapper>
           <main className="flex flex-col">
-            <Outlet context={{ firebaseUser: firebaseUser }} />
+            <Outlet />
           </main>
         </ContentWrapper>
       </div>
