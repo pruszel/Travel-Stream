@@ -20,6 +20,8 @@ import {
   Trip,
 } from "@/utils/tripService.ts";
 
+export const TRIP_LIST_PAGE_HEADER = "My Trips";
+
 export function TripListPage() {
   const { firebaseUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -31,6 +33,11 @@ export function TripListPage() {
     const loadUserTrips = async () => {
       if (!firebaseUser) throw new Error("User does not exist!");
       const token = await firebaseUser.getIdToken();
+      if (!token) {
+        console.error("No Firebase token found for user: ", firebaseUser);
+        addToast("error", FRIENDLY_ERROR_MESSAGES.general);
+        return;
+      }
       const response = await getTrips(token);
       if (response.data) {
         setUserTrips(response.data);
@@ -49,7 +56,7 @@ export function TripListPage() {
       <section>
         <div className="flex flex-col gap-4 sm:gap-0">
           <div className="flex justify-between">
-            <h2 className="text-2xl font-bold">My Trips</h2>
+            <h2 className="text-2xl font-bold">{TRIP_LIST_PAGE_HEADER}</h2>
             <button
               type="button"
               className="btn btn-primary self-end"
