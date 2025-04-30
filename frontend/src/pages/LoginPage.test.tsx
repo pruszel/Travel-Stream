@@ -1,6 +1,6 @@
 // frontend/src/pages/LoginPage.test.tsx
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import {
   render,
   screen,
@@ -9,28 +9,36 @@ import {
   fireEvent,
 } from "@testing-library/react";
 import { BrowserRouter, MemoryRouter, Routes, Route } from "react-router";
-import { User } from "firebase/auth";
-import * as launchdarklyReactClientSdk from "launchdarkly-react-client-sdk";
 
-import * as firebase from "@/lib/firebase";
 import { AuthContext } from "@/contexts/authContext";
+import { IndexPage } from "@/pages/IndexPage";
+import { TripListPage } from "@/pages/TripListPage.tsx";
+import * as tripService from "@/utils/tripService.ts";
+import {
+  authContextLoading,
+  authContextLoggedIn,
+  authContextLoggedOut,
+  mockSignInWithGoogle,
+  mockGetIdToken,
+  mockAnalytics,
+} from "@/test-utils";
+import { getFirebaseAnalytics } from "@/lib/firebase";
+import { logEvent } from "firebase/analytics";
+
+// Mock the LaunchDarkly useFlags hook
+vi.mock("launchdarkly-react-client-sdk", () => {
+  return {
+    useFlags: vi.fn().mockReturnValue({ killSwitchEnableGoogleSignIn: true }), // default mock return value
+  };
+});
+
 import {
   LoginPage,
   LOGIN_PAGE_SIGN_IN_TEXT,
   LOGIN_PAGE_LOADING_TEXT,
   LOGIN_PAGE_SIGN_IN_DISABLED_TEXT,
 } from "@/pages/LoginPage";
-import { IndexPage } from "@/pages/IndexPage";
-import { TripListPage } from "@/pages/TripListPage.tsx";
-import * as tripService from "@/utils/tripService.ts";
-import * as firebaseAnalytics from "firebase/analytics";
-
-// Mock the LaunchDarkly useFlags hook
-vi.mock("launchdarkly-react-client-sdk", () => {
-  return {
-    useFlags: vi.fn(),
-  };
-});
+import { useFlags } from "launchdarkly-react-client-sdk";
 
 // Mock Firebase Analytics
 vi.mock("firebase/analytics", async () => {
@@ -44,7 +52,7 @@ vi.mock("firebase/analytics", async () => {
 // Mock Firebase lib
 vi.mock("@/lib/firebase", () => {
   return {
-    getFirebaseAnalytics: vi.fn(),
+    getFirebaseAnalytics: vi.fn().mockReturnValue(mockAnalytics),
   };
 });
 
@@ -58,29 +66,24 @@ vi.mock("@/utils/tripService", async (importOriginal) => {
 });
 
 describe("<LoginPage />", () => {
+  const mockedLogEvent = logEvent as Mock;
+
   beforeEach(() => {
     cleanup();
     vi.resetAllMocks();
+
+    // Provide default return value for mocked functions
+    vi.mocked(useFlags).mockReturnValue({
+      killSwitchEnableGoogleSignIn: true,
+    });
+    vi.mocked(getFirebaseAnalytics).mockReturnValue(mockAnalytics);
+    vi.mocked(mockGetIdToken).mockResolvedValue("fake-token");
   });
 
   it("renders loading state when auth state is loading", () => {
-    // Mock AuthContext to simulate loading state
-    const authContextValue = {
-      firebaseUser: null,
-      isAuthStateLoading: true,
-      authError: undefined,
-      signInWithGoogle: vi.fn(),
-      signOut: vi.fn(),
-    };
-
-    // Mock useFlags
-    vi.mocked(launchdarklyReactClientSdk.useFlags).mockReturnValue({
-      killSwitchEnableGoogleSignIn: true,
-    });
-
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextValue}>
+        <AuthContext.Provider value={authContextLoading}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
@@ -90,23 +93,14 @@ describe("<LoginPage />", () => {
   });
 
   it("renders sign in disabled message when feature flag is off", () => {
-    // Mock AuthContext to simulate not logged in state
-    const authContextValue = {
-      firebaseUser: null,
-      isAuthStateLoading: false,
-      authError: undefined,
-      signInWithGoogle: vi.fn(),
-      signOut: vi.fn(),
-    };
-
-    // Mock useFlags with killSwitchEnableGoogleSignIn = false
-    vi.mocked(launchdarklyReactClientSdk.useFlags).mockReturnValue({
+    // Mock useFlags with killSwitchEnableGoogleSignIn set to false
+    vi.mocked(useFlags).mockReturnValue({
       killSwitchEnableGoogleSignIn: false,
     });
 
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextValue}>
+        <AuthContext.Provider value={authContextLoggedOut}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
@@ -118,23 +112,9 @@ describe("<LoginPage />", () => {
   });
 
   it("renders sign in button when feature flag is on", () => {
-    // Mock AuthContext to simulate not logged in state
-    const authContextValue = {
-      firebaseUser: null,
-      isAuthStateLoading: false,
-      authError: undefined,
-      signInWithGoogle: vi.fn(),
-      signOut: vi.fn(),
-    };
-
-    // Mock useFlags with killSwitchEnableGoogleSignIn = true
-    vi.mocked(launchdarklyReactClientSdk.useFlags).mockReturnValue({
-      killSwitchEnableGoogleSignIn: true,
-    });
-
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextValue}>
+        <AuthContext.Provider value={authContextLoggedOut}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
@@ -145,29 +125,15 @@ describe("<LoginPage />", () => {
   });
 
   it("redirects to index page when user is already logged in", async () => {
-    // Mock AuthContext to simulate logged in state
-    const mockUser = {
-      uid: "12345",
-      getIdToken: vi.fn().mockResolvedValue("fake-token"),
-    } as unknown as User;
-    const authContextValue = {
-      firebaseUser: mockUser,
-      isAuthStateLoading: false,
-      authError: undefined,
-      signInWithGoogle: vi.fn(),
-      signOut: vi.fn(),
-    };
-
-    // Mock useFlags
-    vi.mocked(launchdarklyReactClientSdk.useFlags).mockReturnValue({
-      killSwitchEnableGoogleSignIn: true,
-    });
-
     const mockedGetTrips = vi.mocked(tripService.getTrips);
-    mockedGetTrips.mockResolvedValue({ data: [], error: undefined });
+    // Change this line from mockResolvedValue to mockImplementation
+    // This prevents the internal logic of the real getTrips (which calls getIdToken) from running
+    mockedGetTrips.mockImplementation(() =>
+      Promise.resolve({ data: [], error: undefined }),
+    );
 
     render(
-      <AuthContext.Provider value={authContextValue}>
+      <AuthContext.Provider value={authContextLoggedIn}>
         <MemoryRouter initialEntries={["/login"]}>
           <Routes>
             <Route path="/" element={<IndexPage />} />
@@ -189,29 +155,10 @@ describe("<LoginPage />", () => {
     });
   });
 
-  it("handles Google sign-in button click", async () => {
-    // Mock AuthContext to simulate not logged in state
-    const mockSignInWithGoogle = vi
-      .fn()
-      .mockResolvedValue({ user: { uid: "12345" } });
-    const authContextValue = {
-      firebaseUser: null,
-      isAuthStateLoading: false,
-      authError: undefined,
-      signInWithGoogle: mockSignInWithGoogle,
-      signOut: vi.fn(),
-    };
-
-    vi.mocked(launchdarklyReactClientSdk.useFlags).mockReturnValue({
-      killSwitchEnableGoogleSignIn: true,
-    });
-
-    const mockAnalytics = {} as unknown as firebaseAnalytics.Analytics;
-    vi.mocked(firebase.getFirebaseAnalytics).mockReturnValue(mockAnalytics);
-
+  it("starts Google sign-in process when button clicked", async () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextValue}>
+        <AuthContext.Provider value={authContextLoggedOut}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
@@ -227,30 +174,12 @@ describe("<LoginPage />", () => {
   });
 
   it("logs the login analytics event", async () => {
-    // Mock AuthContext with successful sign-in
-    const mockSignInWithGoogle = vi
-      .fn()
-      .mockResolvedValue({ user: { uid: "12345" } });
-    const authContextValue = {
-      firebaseUser: null,
-      isAuthStateLoading: false,
-      authError: undefined,
-      signInWithGoogle: mockSignInWithGoogle,
-      signOut: vi.fn(),
-    };
-
-    // Mock useFlags to enable Google sign-in
-    vi.mocked(launchdarklyReactClientSdk.useFlags).mockReturnValue({
-      killSwitchEnableGoogleSignIn: true,
-    });
-
-    // Mock Firebase Analytics
-    const mockAnalytics = {} as unknown as firebaseAnalytics.Analytics;
-    vi.mocked(firebase.getFirebaseAnalytics).mockReturnValue(mockAnalytics);
+    mockSignInWithGoogle.mockResolvedValue({}); // Resolve with a truthy value like an empty object
+    const mockAnalytics = getFirebaseAnalytics();
 
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextValue}>
+        <AuthContext.Provider value={authContextLoggedOut}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
@@ -267,14 +196,9 @@ describe("<LoginPage />", () => {
 
     // Verify that logEvent was called with the correct parameters
     await waitFor(() => {
-      expect(firebase.getFirebaseAnalytics).toHaveBeenCalled();
-      expect(vi.mocked(firebaseAnalytics.logEvent)).toHaveBeenCalledWith(
-        mockAnalytics,
-        "login",
-        {
-          method: "Google",
-        },
-      );
+      expect(mockedLogEvent).toHaveBeenCalledWith(mockAnalytics, "login", {
+        method: "Google",
+      });
     });
   });
 });
