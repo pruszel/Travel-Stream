@@ -9,8 +9,13 @@ import GoogleButton from "react-google-button";
 import { getFirebaseAnalytics } from "@/lib/firebase.ts";
 import { AuthContext } from "@/contexts/authContext";
 
+export const LOGIN_PAGE_SIGN_IN_TEXT = "Sign in to continue";
+export const LOGIN_PAGE_LOADING_TEXT = "Loading...";
+export const LOGIN_PAGE_SIGN_IN_DISABLED_TEXT = "Sign in currently disabled";
+
 export function LoginPage() {
-  const { firebaseUser, isAuthStateLoading, signInWithGoogle } = useContext(AuthContext);
+  const { firebaseUser, isAuthStateLoading, signInWithGoogle } =
+    useContext(AuthContext);
   const navigate = useNavigate();
   const { killSwitchEnableGoogleSignIn } = useFlags();
 
@@ -36,20 +41,20 @@ export function LoginPage() {
   };
 
   if (isAuthStateLoading) {
-    return <p className="text-center">Loading...</p>;
+    return <p className="text-center">{LOGIN_PAGE_LOADING_TEXT}</p>;
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-4">
       {killSwitchEnableGoogleSignIn && (
         <>
-          <p className="text-center">Sign in to continue</p>
+          <p className="text-center">{LOGIN_PAGE_SIGN_IN_TEXT}</p>
           <GoogleButton onClick={handleGoogleButtonClick} />
         </>
       )}
 
       {!killSwitchEnableGoogleSignIn && (
-        <p className="text-center">Sign in currently disabled.</p>
+        <p className="text-center">{LOGIN_PAGE_SIGN_IN_DISABLED_TEXT}</p>
       )}
     </div>
   );
