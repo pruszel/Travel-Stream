@@ -3,7 +3,7 @@
 import { createContext } from "react";
 import { User, UserCredential } from "firebase/auth";
 
-interface AuthContextType {
+export interface AuthContextType {
   firebaseUser: User | null | undefined;
   isAuthStateLoading: boolean;
   authError: Error | undefined;
