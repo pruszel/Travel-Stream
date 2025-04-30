@@ -21,6 +21,7 @@ import {
 } from "@/utils/tripService.ts";
 
 export const TRIP_LIST_PAGE_HEADER = "My Trips";
+export const TRIP_LIST_PAGE_ADD_TRIP_BUTTON_TEXT = "Add Trip";
 
 export function TripListPage() {
   const { firebaseUser } = useContext(AuthContext);
@@ -61,14 +62,10 @@ export function TripListPage() {
               type="button"
               className="btn btn-primary self-end"
               onClick={() => {
-                async function navigateToTripNewPage() {
-                  await navigate("/trips/new");
-                }
-
-                void navigateToTripNewPage();
+                void navigate("/trips/new");
               }}
             >
-              Add Trip
+              {TRIP_LIST_PAGE_ADD_TRIP_BUTTON_TEXT}
             </button>
           </div>
           <TripList userTrips={userTrips} setUserTrips={setUserTrips} />
