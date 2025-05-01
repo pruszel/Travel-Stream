@@ -29,18 +29,14 @@ import {
 } from "@/test-utils";
 
 // Mock the LaunchDarkly useFlags hook
-vi.mock("launchdarkly-react-client-sdk", () => {
-  return {
-    useFlags: vi.fn().mockReturnValue({ killSwitchEnableGoogleSignIn: true }), // default mock return value
-  };
-});
+vi.mock("launchdarkly-react-client-sdk", () => ({
+  useFlags: vi.fn().mockReturnValue({ killSwitchEnableGoogleSignIn: true }), // default mock return value
+}));
 
 // Mock Firebase Analytics
-vi.mock("firebase/analytics", async () => {
-  return {
-    logEvent: vi.fn(),
-  };
-});
+vi.mock("firebase/analytics", () => ({
+  logEvent: vi.fn(),
+}));
 
 // Mock Firebase lib
 vi.mock("@/lib/firebase", () => ({
