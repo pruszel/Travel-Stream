@@ -2,21 +2,14 @@
 
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router";
-import {
-  useAuthState,
-  useSignInWithGoogle,
-  useSignOut,
-} from "react-firebase-hooks/auth";
-import {
-  auth,
-  initializeAnalytics,
-  getFirebaseAnalytics,
-} from "@/lib/firebase";
+import { initializeAnalytics, getFirebaseAnalytics } from "@/lib/firebase";
+import { AuthProvider } from "@/contexts/authProvider";
 import { logEvent } from "firebase/analytics";
 import { User } from "firebase/auth";
 import GoogleButton from "react-google-button";
 import { LDProvider, useFlags } from "launchdarkly-react-client-sdk";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
+import { AuthContext } from "@/contexts/authContext.ts";
 
 const LD_CLIENT_ID = import.meta.env.PROD
   ? `67f0bff500b7a80955249fc7`
@@ -32,10 +25,12 @@ export function App() {
     <>
       <BrowserRouter>
         <LDProvider clientSideID={LD_CLIENT_ID}>
-          <Routes>
-            <Route path="/" element={<IndexPage />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <AuthProvider>
+            <Routes>
+              <Route path="/" element={<IndexPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </AuthProvider>
         </LDProvider>
       </BrowserRouter>
     </>
@@ -43,12 +38,13 @@ export function App() {
 }
 
 function IndexPage() {
-  const [firebaseUser, authStateLoading, authError] = useAuthState(auth);
+  const { firebaseUser, isAuthStateLoading, authError } =
+    useContext(AuthContext);
 
   return (
     <AuthDisplay
       firebaseUser={firebaseUser}
-      authStateLoading={authStateLoading}
+      authStateLoading={isAuthStateLoading}
       authError={authError}
     />
   );
@@ -65,8 +61,7 @@ export function AuthDisplay({
   authStateLoading,
   authError,
 }: AuthDisplayProps) {
-  const [signInWithGoogle] = useSignInWithGoogle(auth);
-  const [signOut] = useSignOut(auth);
+  const { signInWithGoogle, signOut } = useContext(AuthContext);
   const { killSwitchEnableGoogleSignIn } = useFlags();
 
   const handleGoogleButtonClick = () => {
