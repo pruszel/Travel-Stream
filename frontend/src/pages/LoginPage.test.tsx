@@ -12,8 +12,13 @@ import { BrowserRouter, MemoryRouter, Routes, Route } from "react-router";
 
 import { AuthContext } from "@/contexts/authContext";
 import { IndexPage } from "@/pages/IndexPage";
-import { TripListPage } from "@/pages/TripListPage.tsx";
-import * as tripService from "@/utils/tripService.ts";
+import { TripListPage } from "@/pages/TripListPage";
+import {
+  LoginPage,
+  LOGIN_PAGE_SIGN_IN_TEXT,
+  LOGIN_PAGE_LOADING_TEXT,
+  LOGIN_PAGE_SIGN_IN_DISABLED_TEXT,
+} from "@/pages/LoginPage";
 import {
   authContextLoading,
   authContextLoggedIn,
@@ -22,8 +27,6 @@ import {
   mockGetIdToken,
   mockAnalytics,
 } from "@/test-utils";
-import { getFirebaseAnalytics } from "@/lib/firebase";
-import { logEvent } from "firebase/analytics";
 
 // Mock the LaunchDarkly useFlags hook
 vi.mock("launchdarkly-react-client-sdk", () => {
@@ -32,39 +35,31 @@ vi.mock("launchdarkly-react-client-sdk", () => {
   };
 });
 
-import {
-  LoginPage,
-  LOGIN_PAGE_SIGN_IN_TEXT,
-  LOGIN_PAGE_LOADING_TEXT,
-  LOGIN_PAGE_SIGN_IN_DISABLED_TEXT,
-} from "@/pages/LoginPage";
-import { useFlags } from "launchdarkly-react-client-sdk";
-
 // Mock Firebase Analytics
 vi.mock("firebase/analytics", async () => {
-  const actual = await import("firebase/analytics");
   return {
-    ...actual,
     logEvent: vi.fn(),
   };
 });
 
 // Mock Firebase lib
-vi.mock("@/lib/firebase", () => {
-  return {
-    getFirebaseAnalytics: vi.fn().mockReturnValue(mockAnalytics),
-  };
-});
+vi.mock("@/lib/firebase", () => ({
+  getFirebaseAnalytics: vi.fn().mockReturnValue({}),
+}));
 
 // Mock tripService
-vi.mock("@/utils/tripService", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/utils/tripService")>();
-  return {
-    ...actual,
-    getTrips: vi.fn(),
-  };
-});
+vi.mock("@/utils/tripService", () => ({
+  getTrips: vi.fn(),
+}));
 
+import { useFlags } from "launchdarkly-react-client-sdk";
+import { logEvent } from "firebase/analytics";
+import { getFirebaseAnalytics } from "@/lib/firebase";
+import { getTrips } from "@/utils/tripService";
+
+/**
+ * LoginPage tests
+ */
 describe("<LoginPage />", () => {
   const mockedLogEvent = logEvent as Mock;
 
@@ -125,12 +120,10 @@ describe("<LoginPage />", () => {
   });
 
   it("redirects to index page when user is already logged in", async () => {
-    const mockedGetTrips = vi.mocked(tripService.getTrips);
-    // Change this line from mockResolvedValue to mockImplementation
-    // This prevents the internal logic of the real getTrips (which calls getIdToken) from running
-    mockedGetTrips.mockImplementation(() =>
-      Promise.resolve({ data: [], error: undefined }),
-    );
+    vi.mocked(getTrips).mockResolvedValue({
+      data: [],
+      error: undefined,
+    });
 
     render(
       <AuthContext.Provider value={authContextLoggedIn}>
