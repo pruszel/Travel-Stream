@@ -10,6 +10,8 @@ import { convertFormDataToStringSafely } from "@/utils/utils.ts";
 import { AuthContext } from "@/contexts/authContext.ts";
 
 export const TRIP_NEW_PAGE_HEADER = "New Trip";
+export const TRIP_NEW_PAGE_FORM_NAME = "new-trip-form";
+export const TRIP_NEW_PAGE_FORM_ACCESSIBLE_NAME = "New Trip Form";
 
 export function TripNewPage() {
   return (
@@ -47,7 +49,7 @@ function AddTripForm() {
           addToast("success", "Trip added successfully.");
           void navigate(`/trips/${response.data.id.toString()}`);
         }
-        event.currentTarget.reset();
+        (event.target as HTMLFormElement).reset();
       };
 
       void handleTripCreation();
@@ -57,7 +59,12 @@ function AddTripForm() {
 
   return (
     <>
-      <form className="flex flex-col gap-4" onSubmit={handleAddTripFormSubmit}>
+      <form
+        className="flex flex-col gap-4"
+        name={TRIP_NEW_PAGE_FORM_NAME}
+        aria-label={TRIP_NEW_PAGE_FORM_ACCESSIBLE_NAME}
+        onSubmit={handleAddTripFormSubmit}
+      >
         <div className="flex flex-col gap-2">
           <label className="label" htmlFor="trip-name">
             Trip Name
