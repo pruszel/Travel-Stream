@@ -14,6 +14,9 @@ import { ToastContext } from "@/contexts/toastContext";
 import { AuthContext } from "@/contexts/authContext";
 import { convertFormDataToStringSafely } from "@/utils/utils";
 
+export const TRIP_EDIT_PAGE_FORM_NAME = "edit-trip-form";
+export const TRIP_EDIT_PAGE_FORM_ACCESSIBLE_NAME = "Edit Trip Form";
+
 export function TripEditPage() {
   const { id: idParam } = useParams();
   if (!idParam) {
@@ -104,7 +107,12 @@ export function EditTripForm({ tripId }: EditTripFormProps) {
   return (
     <section className="flex flex-col gap-6">
       <h2 className="text-2xl font-bold">Edit Trip</h2>
-      <form onSubmit={handleEditTripFormSubmit} className="flex flex-col gap-4">
+      <form
+        className="flex flex-col gap-4"
+        name={TRIP_EDIT_PAGE_FORM_NAME}
+        aria-label={TRIP_EDIT_PAGE_FORM_ACCESSIBLE_NAME}
+        onSubmit={handleEditTripFormSubmit}
+      >
         <div className="flex flex-col gap-2">
           <label className="label" htmlFor="trip-name">
             Trip Name
