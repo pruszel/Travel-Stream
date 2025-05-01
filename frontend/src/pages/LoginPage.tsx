@@ -6,7 +6,7 @@ import { useFlags } from "launchdarkly-react-client-sdk";
 import { logEvent } from "firebase/analytics";
 import GoogleButton from "react-google-button";
 
-import { getFirebaseAnalytics } from "@/lib/firebase.ts";
+import { getFirebaseAnalytics } from "@/lib/firebase";
 import { AuthContext } from "@/contexts/authContext";
 
 export const LOGIN_PAGE_SIGN_IN_TEXT = "Sign in to continue";
