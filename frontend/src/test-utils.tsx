@@ -39,3 +39,14 @@ export const authContextLoggedIn: AuthContextType = {
   signInWithGoogle: mockSignInWithGoogle,
   signOut: mockSignOut,
 };
+
+export const mockAddToast = vi.fn();
+export const mockRemoveToast = vi.fn();
+export const mockClearToasts = vi.fn();
+
+export const toastContextValue = {
+  addToast: mockAddToast,
+  removeToast: mockRemoveToast,
+  clearToasts: mockClearToasts,
+  toasts: [],
+};
