@@ -9,12 +9,14 @@ import { ToastContext } from "@/contexts/toastContext.ts";
 import { convertFormDataToStringSafely } from "@/utils/utils.ts";
 import { AuthContext } from "@/contexts/authContext.ts";
 
+export const TRIP_NEW_PAGE_HEADER = "New Trip";
+
 export function TripNewPage() {
   return (
     <>
       <section>
         <div className="flex flex-col gap-6">
-          <h2 className="text-2xl font-bold">Add Trip</h2>
+          <h2 className="text-2xl font-bold">{TRIP_NEW_PAGE_HEADER}</h2>
           <AddTripForm />
         </div>
       </section>
@@ -122,11 +124,7 @@ function AddTripForm() {
             type="button"
             className="btn self-start"
             onClick={() => {
-              async function navigateToTripListPage() {
-                await navigate("/trips");
-              }
-
-              void navigateToTripListPage();
+              void navigate("/trips");
             }}
           >
             Cancel
