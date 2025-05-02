@@ -1,7 +1,7 @@
 // frontend/src/components/Toast.tsx
 
 import { useContext } from "react";
-import { ToastContext } from "@/contexts/toastContext.ts";
+import { ToastContext } from "@/contexts/toastContext";
 
 export function Toast() {
   const { toasts } = useContext(ToastContext);
