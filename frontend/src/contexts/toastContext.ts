@@ -8,16 +8,12 @@ export interface Toast {
   id: number;
   type: ToastType;
   message: string;
-  expirationInSeconds?: number | null;
+  duration?: number | null;
 }
 
 export interface ToastContextType {
   toasts: Toast[];
-  addToast: (
-    type: ToastType,
-    message: string,
-    expirationInSeconds?: number,
-  ) => void;
+  addToast: (type: ToastType, message: string, duration?: number) => void;
   removeToast: (id: number) => void;
 }
 

@@ -12,7 +12,7 @@ import {
 
 import { ToastProvider } from "./toastProvider";
 import { ToastContext } from "./toastContext";
-import { DEFAULT_TOAST_EXPIRATION_IN_SECONDS } from "@/constants";
+import { DEFAULT_TOAST_DURATION } from "@/constants";
 
 // Mock setTimeout and clearTimeout
 vi.useFakeTimers();
@@ -146,7 +146,7 @@ describe("ToastProvider", () => {
     expect(screen.getByTestId("toasts-count").textContent).toBe("0");
   });
 
-  it("should automatically remove a toast after the default expiration time", () => {
+  it("should automatically remove a toast after the default duration time", () => {
     render(
       <ToastProvider>
         <TestComponent />
@@ -156,9 +156,9 @@ describe("ToastProvider", () => {
     fireEvent.click(screen.getByTestId("add-success-toast"));
     expect(screen.getByTestId("toasts-count").textContent).toBe("1");
 
-    // Fast-forward time by the default expiration time
+    // Fast-forward time by the default duration time
     act(() => {
-      vi.advanceTimersByTime(DEFAULT_TOAST_EXPIRATION_IN_SECONDS * 1000);
+      vi.advanceTimersByTime(DEFAULT_TOAST_DURATION * 1000);
     });
 
     expect(screen.getByTestId("toasts-count").textContent).toBe("0");
@@ -174,9 +174,9 @@ describe("ToastProvider", () => {
     fireEvent.click(screen.getByTestId("add-persistent-toast"));
     expect(screen.getByTestId("toasts-count").textContent).toBe("1");
 
-    // Fast-forward time by more than the default expiration time
+    // Fast-forward time by more than the default duration time
     act(() => {
-      vi.advanceTimersByTime(DEFAULT_TOAST_EXPIRATION_IN_SECONDS * 2000);
+      vi.advanceTimersByTime(DEFAULT_TOAST_DURATION * 2000);
     });
 
     // The toast should still be there
