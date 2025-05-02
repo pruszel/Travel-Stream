@@ -2,14 +2,11 @@
 
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router";
-import { initializeAnalytics, getFirebaseAnalytics } from "@/lib/firebase";
+import { initializeAnalytics } from "@/lib/firebase";
 import { AuthProvider } from "@/contexts/authProvider";
-import { logEvent } from "firebase/analytics";
-import { User } from "firebase/auth";
-import GoogleButton from "react-google-button";
-import { LDProvider, useFlags } from "launchdarkly-react-client-sdk";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "@/contexts/authContext.ts";
+import { LDProvider } from "launchdarkly-react-client-sdk";
+import { useEffect } from "react";
+import { UserDisplay } from "@/components/UserDisplay.tsx";
 
 const LD_CLIENT_ID = import.meta.env.PROD
   ? `67f0bff500b7a80955249fc7`
@@ -38,74 +35,7 @@ export function App() {
 }
 
 function IndexPage() {
-  const { firebaseUser, isAuthStateLoading, authError } =
-    useContext(AuthContext);
-
-  return (
-    <AuthDisplay
-      firebaseUser={firebaseUser}
-      authStateLoading={isAuthStateLoading}
-      authError={authError}
-    />
-  );
-}
-
-interface AuthDisplayProps {
-  firebaseUser: User | null | undefined;
-  authStateLoading: boolean;
-  authError: Error | undefined;
-}
-
-export function AuthDisplay({
-  firebaseUser,
-  authStateLoading,
-  authError,
-}: AuthDisplayProps) {
-  const { signInWithGoogle, signOut } = useContext(AuthContext);
-  const { killSwitchEnableGoogleSignIn } = useFlags();
-
-  const handleGoogleButtonClick = () => {
-    async function performSignIn() {
-      const user = await signInWithGoogle();
-      if (user) {
-        const analytics = await getFirebaseAnalytics();
-        if (!analytics) return;
-        logEvent(analytics, "login", { method: "Google" });
-      }
-    }
-
-    void performSignIn();
-  };
-
-  if (firebaseUser) {
-    return (
-      <>
-        <div className="flex gap-8 items-center flex-row">
-          <p>Hello, {firebaseUser.displayName}</p>
-          <button
-            type={"button"}
-            onClick={() => {
-              void signOut();
-            }}
-          >
-            Sign Out
-          </button>
-        </div>
-      </>
-    );
-  }
-
-  if (authStateLoading || authError) {
-    return null;
-  }
-
-  return (
-    <>
-      {killSwitchEnableGoogleSignIn && (
-        <GoogleButton onClick={handleGoogleButtonClick} />
-      )}
-    </>
-  );
+  return <UserDisplay />;
 }
 
 function NotFound() {
