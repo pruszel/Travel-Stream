@@ -11,8 +11,8 @@ const renderWithToastContext = (toasts: ToastType[]) => {
     <ToastContext.Provider
       value={{
         toasts,
-        addToast: () => {},
-        removeToast: () => {},
+        addToast: () => vi.fn(),
+        removeToast: () => vi.fn(),
       }}
     >
       <Toast />
@@ -20,11 +20,15 @@ const renderWithToastContext = (toasts: ToastType[]) => {
   );
 };
 
-describe("Toast component", () => {
+/**
+ * Toast tests
+ */
+describe("Toast", () => {
   beforeEach(() => {
     cleanup();
     vi.resetAllMocks();
   });
+
   it("should render nothing when there are no toasts", () => {
     const { container } = renderWithToastContext([]);
     expect(container.innerHTML).toBe("");
