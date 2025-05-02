@@ -31,7 +31,7 @@ export function UserDisplay() {
     }
 
     void performSignIn();
-  }, [signInWithGoogle, getFirebaseAnalytics, logEvent]);
+  }, [signInWithGoogle]);
 
   if (isAuthStateLoading || authError) return null;
 
