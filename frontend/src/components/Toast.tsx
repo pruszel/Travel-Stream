@@ -1,10 +1,10 @@
 // frontend/src/components/Toast.tsx
 
 import { useContext } from "react";
-import { ToastContext } from "@/contexts/toastContext.ts";
+import { ToastContext } from "@/contexts/toastContext";
 
 export function Toast() {
-  const context = useContext(ToastContext);
+  const { toasts } = useContext(ToastContext);
 
   const toastClasses = {
     success: "alert-success",
@@ -13,19 +13,17 @@ export function Toast() {
     info: "alert-info",
   };
 
-  if (!context.toasts.length) return null;
+  if (!toasts.length) return null;
 
   return (
-    <div className="toast">
-      {context.toasts.map((toast) => (
-        <div
-          key={toast.id}
-          role="alert"
-          className={`alert ${toastClasses[toast.type]}`}
-        >
-          <span>{toast.message}</span>
+    <>
+      {toasts.map((toast) => (
+        <div className="toast" key={toast.id}>
+          <div role="alert" className={`alert ${toastClasses[toast.type]}`}>
+            <span>{toast.message}</span>
+          </div>
         </div>
       ))}
-    </div>
+    </>
   );
 }
