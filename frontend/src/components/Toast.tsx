@@ -15,11 +15,15 @@ export function Toast() {
 
   if (!toasts.length) return null;
 
-  return toasts.map((toast) => (
-    <div className="toast" key={toast.id}>
-      <div role="alert" className={`alert ${toastClasses[toast.type]}`}>
-        <span>{toast.message}</span>
-      </div>
-    </div>
-  ));
+  return (
+    <>
+      {toasts.map((toast) => (
+        <div className="toast" key={toast.id}>
+          <div role="alert" className={`alert ${toastClasses[toast.type]}`}>
+            <span>{toast.message}</span>
+          </div>
+        </div>
+      ))}
+    </>
+  );
 }
