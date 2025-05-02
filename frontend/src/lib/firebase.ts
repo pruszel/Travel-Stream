@@ -8,6 +8,7 @@ import {
   getAnalytics,
   Analytics,
   isSupported as isAnalyticsSupported,
+  logEvent,
 } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
@@ -39,6 +40,21 @@ export async function initializeAnalytics() {
   }
 }
 
-export function getFirebaseAnalytics(): Analytics | undefined {
+/**
+ * Returns the Firebase Analytics instance if it has been initialized.
+ * Or initializes it if not already done.
+ */
+export async function getFirebaseAnalytics(): Promise<Analytics | undefined> {
+  analyticsInstance ??= await initializeAnalytics();
   return analyticsInstance;
+}
+
+/**
+ * Tracks the login event in Firebase Analytics.
+ */
+export async function trackLoginEvent() {
+  const analytics = await getFirebaseAnalytics();
+  if (!analytics) return;
+  logEvent(analytics, "login", { method: "Google" });
+  return;
 }
