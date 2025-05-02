@@ -16,6 +16,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [signInWithGoogle] = useSignInWithGoogle(auth);
   const [signOut] = useSignOut(auth);
 
+  if (authError) {
+    console.error(`Authentication error: ${authError.message}`);
+  }
+
   const contextValue = useMemo(
     () => ({
       firebaseUser,

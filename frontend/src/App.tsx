@@ -3,10 +3,10 @@
 import "./App.css";
 
 import { BrowserRouter, Routes, Route } from "react-router";
-import { initializeAnalytics } from "@/lib/firebase";
 import { LDProvider, useFlags } from "launchdarkly-react-client-sdk";
 import { useEffect } from "react";
 
+import { initializeAnalytics } from "@/lib/firebase";
 import { LD_CLIENT_ID } from "@/constants.ts";
 import { AuthProvider } from "@/contexts/authProvider.tsx";
 import { TripsLayout } from "@/layouts/TripsLayout.tsx";
