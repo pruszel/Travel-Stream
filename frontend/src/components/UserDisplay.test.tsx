@@ -56,18 +56,18 @@ vi.mock("firebase/analytics", () => ({
 // Mock Firebase lib
 vi.mock("@/lib/firebase", () => ({
   getFirebaseAnalytics: vi.fn().mockReturnValue({}),
+  trackLoginEvent: vi.fn(),
 }));
 
 // Import mocked libraries after mocking them
 import { useFlags } from "launchdarkly-react-client-sdk";
-import { logEvent } from "firebase/analytics";
-import { getFirebaseAnalytics } from "@/lib/firebase";
+import { getFirebaseAnalytics, trackLoginEvent } from "@/lib/firebase";
 
 /**
  * UserDisplay tests
  */
 describe("UserDisplay", () => {
-  const mockedLogEvent = logEvent as Mock;
+  const mockedTrackLoginEvent = trackLoginEvent as Mock;
 
   beforeEach(() => {
     cleanup();
@@ -77,7 +77,8 @@ describe("UserDisplay", () => {
     vi.mocked(useFlags).mockReturnValue({
       killSwitchEnableGoogleSignIn: true,
     });
-    vi.mocked(getFirebaseAnalytics).mockReturnValue(mockAnalytics);
+    vi.mocked(getFirebaseAnalytics).mockResolvedValue(mockAnalytics);
+    mockSignInWithGoogle.mockResolvedValue(mockUser);
   });
 
   it("should render nothing when auth state is loading", () => {
@@ -126,10 +127,11 @@ describe("UserDisplay", () => {
       </AuthContext.Provider>,
     );
 
+    // Click the sign-out button
     const signOutButton = screen.getByText(SIGN_OUT_BUTTON_TEXT);
     fireEvent.click(signOutButton);
 
-    // Check that signOut was called
+    // Verify that signOut was called
     expect(authContextLoggedIn.signOut).toHaveBeenCalled();
   });
 
@@ -140,7 +142,7 @@ describe("UserDisplay", () => {
       </AuthContext.Provider>,
     );
 
-    // Check for Google button
+    // Verify for Google button
     const googleButton = screen.getByRole("button");
     expect(googleButton).toBeInTheDocument();
   });
@@ -157,13 +159,14 @@ describe("UserDisplay", () => {
       </AuthContext.Provider>,
     );
 
-    // Check that no button is rendered
+    // Verify that no button is rendered
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(container.innerHTML).toBe("");
   });
 
   it("should call signInWithGoogle and log event when Google button is clicked", async () => {
-    mockSignInWithGoogle.mockResolvedValue({ uid: "test-uid" }); // Mock successful sign-in
+    // Mock successful sign-in
+    mockSignInWithGoogle.mockResolvedValue({ uid: "test-uid" });
 
     render(
       <AuthContext.Provider value={authContextLoggedOut}>
@@ -175,39 +178,12 @@ describe("UserDisplay", () => {
     const googleButton = screen.getByRole("button");
     fireEvent.click(googleButton);
 
-    // Check that signInWithGoogle was called
+    // Verify that signInWithGoogle was called
     expect(mockSignInWithGoogle).toHaveBeenCalled();
 
-    // Wait for the async operation to complete
+    // Verify that trackLoginEvent was called
     await vi.waitFor(() => {
-      // Check that logEvent was called with the correct parameters
-      expect(mockedLogEvent).toHaveBeenCalledWith(mockAnalytics, "login", {
-        method: "Google",
-      });
-    });
-  });
-
-  it("should not log event if analytics is not available", async () => {
-    mockSignInWithGoogle.mockResolvedValue({ uid: "test-uid" }); // Mock successful sign-in
-    vi.mocked(getFirebaseAnalytics).mockReturnValue(undefined); // Mock analytics not available
-
-    render(
-      <AuthContext.Provider value={authContextLoggedOut}>
-        <UserDisplay />
-      </AuthContext.Provider>,
-    );
-
-    // Click the Google button
-    const googleButton = screen.getByRole("button");
-    fireEvent.click(googleButton);
-
-    // Check that signInWithGoogle was called
-    expect(mockSignInWithGoogle).toHaveBeenCalled();
-
-    // Wait for the async operation to complete
-    await vi.waitFor(() => {
-      // Check that logEvent was not called
-      expect(mockedLogEvent).not.toHaveBeenCalled();
+      expect(mockedTrackLoginEvent).toHaveBeenCalled();
     });
   });
 });

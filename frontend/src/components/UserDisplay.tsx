@@ -2,11 +2,10 @@
 
 import { useCallback, useContext } from "react";
 import { useFlags } from "launchdarkly-react-client-sdk";
-import { logEvent } from "firebase/analytics";
 import GoogleButton from "react-google-button";
 
 import { AuthContext } from "@/contexts/authContext.ts";
-import { getFirebaseAnalytics } from "@/lib/firebase.ts";
+import { trackLoginEvent } from "@/lib/firebase.ts";
 
 export const SIGN_OUT_BUTTON_TEXT = "Sign Out";
 
@@ -23,11 +22,8 @@ export function UserDisplay() {
   const handleGoogleButtonClick = useCallback(() => {
     async function performSignIn() {
       const user = await signInWithGoogle();
-      if (user) {
-        const analytics = getFirebaseAnalytics();
-        if (!analytics) return;
-        logEvent(analytics, "login", { method: "Google" });
-      }
+      if (user) trackLoginEvent();
+      return;
     }
 
     void performSignIn();
