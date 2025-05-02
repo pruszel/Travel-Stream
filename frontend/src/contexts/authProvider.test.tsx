@@ -73,6 +73,7 @@ describe("AuthProvider", () => {
     vi.clearAllMocks();
 
     vi.mocked(useAuthState).mockReturnValue([null, false, undefined]);
+
     // useSignInWithGoogle returns [signInFunction, user, loading, error]
     vi.mocked(useSignInWithGoogle).mockReturnValue([
       mockSignIn,
@@ -80,6 +81,7 @@ describe("AuthProvider", () => {
       false,
       undefined,
     ]);
+
     // useSignOut returns [signOutFunction, loading, error]
     vi.mocked(useSignOut).mockReturnValue([mockSignOut, false, undefined]);
   });
@@ -97,6 +99,7 @@ describe("AuthProvider", () => {
   });
 
   it("should reflect authenticated state when user exists", () => {
+    // Mock authenticated user
     const mockUser = { uid: "123", displayName: "Test User" } as User;
     vi.mocked(useAuthState).mockReturnValue([mockUser, false, undefined]);
 
@@ -106,10 +109,12 @@ describe("AuthProvider", () => {
       </AuthProvider>,
     );
 
+    // Verify user state is signed-in
     expect(screen.getByTestId("user-state").textContent).toBe("signed-in");
   });
 
   it("should reflect loading state", () => {
+    // Mock loading state
     vi.mocked(useAuthState).mockReturnValue([null, true, undefined]);
 
     render(
@@ -118,10 +123,39 @@ describe("AuthProvider", () => {
       </AuthProvider>,
     );
 
+    // Verify loading state is reflected
     expect(screen.getByTestId("loading-state").textContent).toBe("true");
   });
 
+  it("should log error to console", () => {
+    // Mock console.error
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {
+        return;
+      });
+    // Mock an error in auth state
+    const error = new Error("Auth error");
+    vi.mocked(useAuthState).mockReturnValue([null, false, error]);
+
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>,
+    );
+
+    // Verify that console.error was called with the expected message
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      `Authentication error: ${error.message}`,
+    );
+  });
+
   it("should reflect error state", () => {
+    // Mock console.error to avoid logging errors in tests
+    vi.spyOn(console, "error").mockImplementation(() => {
+      return;
+    });
+    // Mock an error in auth state
     const error = new Error("Auth error");
     vi.mocked(useAuthState).mockReturnValue([null, false, error]);
 
