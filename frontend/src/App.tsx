@@ -68,7 +68,7 @@ export function AuthDisplay({
     async function performSignIn() {
       const user = await signInWithGoogle();
       if (user) {
-        const analytics = getFirebaseAnalytics();
+        const analytics = await getFirebaseAnalytics();
         if (!analytics) return;
         logEvent(analytics, "login", { method: "Google" });
       }
