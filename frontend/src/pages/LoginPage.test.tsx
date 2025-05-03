@@ -40,7 +40,7 @@ vi.mock("firebase/analytics", () => ({
 
 // Mock Firebase lib
 vi.mock("@/lib/firebase", () => ({
-  getFirebaseAnalytics: vi.fn().mockReturnValue({}),
+  getFirebaseAnalytics: vi.fn().mockResolvedValue({}),
 }));
 
 // Mock tripService
@@ -67,7 +67,7 @@ describe("<LoginPage />", () => {
     vi.mocked(useFlags).mockReturnValue({
       killSwitchEnableGoogleSignIn: true,
     });
-    vi.mocked(getFirebaseAnalytics).mockReturnValue(mockAnalytics);
+    vi.mocked(getFirebaseAnalytics).mockResolvedValue(mockAnalytics);
     vi.mocked(mockGetIdToken).mockResolvedValue("fake-token");
   });
 
@@ -163,8 +163,8 @@ describe("<LoginPage />", () => {
   });
 
   it("logs the login analytics event", async () => {
-    mockSignInWithGoogle.mockResolvedValue({}); // Resolve with a truthy value like an empty object
-    const mockAnalytics = getFirebaseAnalytics();
+    mockSignInWithGoogle.mockResolvedValue({});
+    const mockAnalytics = await getFirebaseAnalytics();
 
     render(
       <BrowserRouter>
