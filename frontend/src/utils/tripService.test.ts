@@ -1,6 +1,7 @@
 // frontend/src/utils/tripService.test.ts
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { mockFirebaseToken } from "@/test-utils";
 import {
   createTrip,
   getTrips,
@@ -16,20 +17,8 @@ import {
 beforeEach(() => {
   // Stub the global fetch function
   vi.stubGlobal("fetch", vi.fn());
-  // Reset mocks before each test
   vi.resetAllMocks();
 });
-
-afterEach(() => {
-  // Restore fetch
-  vi.unstubAllGlobals();
-  // Clear all mocks
-  vi.clearAllMocks();
-  // Restore any spied methods
-  vi.restoreAllMocks();
-});
-
-const mockFirebaseToken = "test-token";
 
 const mockTrip: Trip = {
   id: 1,
