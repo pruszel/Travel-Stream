@@ -47,11 +47,11 @@ export function TripShowPage() {
   );
 }
 
-interface TripDetailsHeader {
+interface TripDetailsHeaderProps {
   trip: Trip | null;
 }
 
-function TripDetailsHeader({ trip }: TripDetailsHeader) {
+function TripDetailsHeader({ trip }: TripDetailsHeaderProps) {
   const { firebaseUser } = useContext(AuthContext);
   const { addToast } = useContext(ToastContext);
   const navigate = useNavigate();
