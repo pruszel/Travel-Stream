@@ -7,7 +7,7 @@ The app is currently in **Pre-alpha**.
 ## Roadmap
 
 1. ~~Sign in with Google.~~
-2. Create, view, update, and delete trips with basic info about where and when.
+2. ~~Create, view, update, and delete trips with basic info about where and when.~~
 3. Add flight info to trips.
 4. Auto-complete airport, city, and other info based on flight number.
 5. Add rental car info to trips.
