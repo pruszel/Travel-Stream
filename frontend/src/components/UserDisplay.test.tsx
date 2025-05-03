@@ -2,46 +2,17 @@
 
 import { beforeEach, describe, expect, it, vi, Mock } from "vitest";
 import { cleanup, render, screen, fireEvent } from "@testing-library/react";
-import { User } from "firebase/auth";
-import { Analytics } from "firebase/analytics";
 
+import {
+  mockUser,
+  mockAnalytics,
+  mockSignInWithGoogle,
+  authContextLoading,
+  authContextLoggedOut,
+  authContextLoggedIn,
+} from "@/test-utils";
 import { UserDisplay, SIGN_OUT_BUTTON_TEXT } from "./UserDisplay";
-import { AuthContext, AuthContextType } from "@/contexts/authContext";
-
-const mockAnalytics = {} as Analytics;
-const mockSignInWithGoogle = vi.fn().mockResolvedValue({});
-const mockGetIdToken = vi.fn().mockResolvedValue("fake-token");
-const mockSignOut = vi.fn();
-
-const mockUser = {
-  uid: "12345",
-  displayName: "Test User",
-  getIdToken: mockGetIdToken,
-} as unknown as User;
-
-const authContextLoading: AuthContextType = {
-  firebaseUser: null,
-  isAuthStateLoading: true,
-  authError: undefined,
-  signInWithGoogle: mockSignInWithGoogle,
-  signOut: mockSignOut,
-};
-
-const authContextLoggedOut: AuthContextType = {
-  firebaseUser: null,
-  isAuthStateLoading: false,
-  authError: undefined,
-  signInWithGoogle: mockSignInWithGoogle,
-  signOut: mockSignOut,
-};
-
-const authContextLoggedIn: AuthContextType = {
-  firebaseUser: mockUser,
-  isAuthStateLoading: false,
-  authError: undefined,
-  signInWithGoogle: mockSignInWithGoogle,
-  signOut: mockSignOut,
-};
+import { AuthContext } from "@/contexts/authContext";
 
 // Mock the LaunchDarkly useFlags hook
 vi.mock("launchdarkly-react-client-sdk", () => ({
