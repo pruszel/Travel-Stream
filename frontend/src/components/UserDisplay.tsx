@@ -5,7 +5,7 @@ import { useFlags } from "launchdarkly-react-client-sdk";
 import GoogleButton from "react-google-button";
 
 import { AuthContext } from "@/contexts/authContext.ts";
-import { trackLoginEvent } from "@/lib/firebase.ts";
+import { trackEvent } from "@/lib/firebase.ts";
 
 export const SIGN_OUT_BUTTON_TEXT = "Sign Out";
 
@@ -22,7 +22,7 @@ export function UserDisplay() {
   const handleGoogleButtonClick = useCallback(() => {
     async function performSignIn() {
       const user = await signInWithGoogle();
-      if (user) await trackLoginEvent();
+      if (user) await trackEvent("login", { method: "Google" });
       return;
     }
 

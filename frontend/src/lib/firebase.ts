@@ -9,6 +9,7 @@ import {
   Analytics,
   isSupported as isAnalyticsSupported,
   logEvent,
+  EventParams,
 } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 
@@ -50,11 +51,13 @@ export async function getFirebaseAnalytics(): Promise<Analytics | undefined> {
 }
 
 /**
- * Tracks the login event in Firebase Analytics.
+ * Tracks a custom event in Firebase Analytics.
+ * @param eventName The name of the event to track.
+ * @param eventParams Optional parameters associated with the event.
  */
-export async function trackLoginEvent() {
+export async function trackEvent(eventName: string, eventParams?: EventParams) {
   const analytics = await getFirebaseAnalytics();
   if (!analytics) return;
-  logEvent(analytics, "login", { method: "Google" });
+  logEvent(analytics, eventName, eventParams);
   return;
 }
