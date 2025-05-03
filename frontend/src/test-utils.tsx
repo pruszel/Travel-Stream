@@ -11,6 +11,14 @@ export const mockSignInWithGoogle = vi.fn().mockResolvedValue({});
 export const mockGetIdToken = vi.fn().mockResolvedValue("fake-token");
 const mockSignOut = vi.fn();
 
+export const mockUser = {
+  uid: "12345",
+  displayName: "Test User",
+  getIdToken: mockGetIdToken,
+} as unknown as User;
+
+export const mockFirebaseToken = "test-firebase-token";
+
 export const authContextLoading: AuthContextType = {
   firebaseUser: null,
   isAuthStateLoading: true,
@@ -26,11 +34,6 @@ export const authContextLoggedOut: AuthContextType = {
   signInWithGoogle: mockSignInWithGoogle,
   signOut: mockSignOut,
 };
-
-const mockUser = {
-  uid: "12345",
-  getIdToken: mockGetIdToken,
-} as unknown as User;
 
 export const authContextLoggedIn: AuthContextType = {
   firebaseUser: mockUser,
