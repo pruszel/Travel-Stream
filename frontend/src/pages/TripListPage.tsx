@@ -114,7 +114,17 @@ function TripList({ userTrips, setUserTrips }: TripListProps) {
     [firebaseUser, setUserTrips, addToast],
   );
 
-  if (userTrips.length === 0) return null;
+  if (userTrips.length === 0) {
+    return (
+      <>
+        <div>
+          <p className="text-gray-500 dark:text-gray-300 mt-4">
+            No trips to display.
+          </p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <ul className="list">
