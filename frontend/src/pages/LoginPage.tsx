@@ -30,10 +30,10 @@ export function LoginPage() {
     const handleGoogleSignIn = async () => {
       const result = await signInWithGoogle();
       if (result) {
-        const analytics = getFirebaseAnalytics();
-        if (analytics) {
-          logEvent(analytics, "login", { method: "Google" });
-        }
+        const analytics = await getFirebaseAnalytics();
+        if (!analytics) return;
+        logEvent(analytics, "login", { method: "Google" });
+        return;
       }
     };
 
