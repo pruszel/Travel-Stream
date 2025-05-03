@@ -12,6 +12,7 @@ import {
 import { ToastContext } from "@/contexts/toastContext.ts";
 import { BackButton } from "@/components/BackButton.tsx";
 import { AuthContext } from "@/contexts/authContext.ts";
+import { trackEvent } from "@/lib/firebase.ts";
 
 export function TripShowPage() {
   const { addToast } = useContext(ToastContext);
@@ -82,6 +83,7 @@ function TripDetailsHeader({ trip }: TripDetailsHeaderProps) {
 
       if (!response.error) {
         addToast("success", "Trip deleted successfully.");
+        void trackEvent("delete_trip", { source: "show_page" });
         await navigate("/trips");
       } else {
         console.error("Error deleting trip: ", response.error.message);

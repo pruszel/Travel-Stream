@@ -13,6 +13,7 @@ import {
 import { ToastContext } from "@/contexts/toastContext";
 import { AuthContext } from "@/contexts/authContext";
 import { convertFormDataToStringSafely } from "@/utils/utils";
+import { trackEvent } from "@/lib/firebase.ts";
 
 export const TRIP_EDIT_PAGE_FORM_NAME = "edit-trip-form";
 export const TRIP_EDIT_PAGE_FORM_ACCESSIBLE_NAME = "Edit Trip Form";
@@ -87,6 +88,7 @@ export function EditTripForm({ tripId }: EditTripFormProps) {
         const response = await updateTrip(token, tripId, updatedTrip);
         if (response.data) {
           addToast("success", "Trip updated successfully.");
+          void trackEvent("update_trip");
           void navigate(`/trips/${tripId.toString()}`);
         } else if (response.error) {
           console.error("Error updating trip: ", response.error.message);
