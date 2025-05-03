@@ -7,6 +7,7 @@ import {
   getTrip,
   updateTrip,
   deleteTrip,
+  API_BASE_URL,
   FRIENDLY_ERROR_MESSAGES,
   type Trip,
   type BaseTrip,
@@ -29,7 +30,6 @@ afterEach(() => {
 });
 
 const mockFirebaseToken = "test-token";
-const API_BASE_URL = "http://localhost:8000"; // Assuming test environment
 
 const mockTrip: Trip = {
   id: 1,

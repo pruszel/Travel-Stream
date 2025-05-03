@@ -22,7 +22,7 @@ export interface ApiResponse<T> {
   };
 }
 
-const API_BASE_URL =
+export const API_BASE_URL =
   import.meta.env.MODE === "production"
     ? "https://api.travelstreamapp.com"
     : "http://localhost:8000";
