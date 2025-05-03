@@ -109,7 +109,7 @@ describe("AuthProvider", () => {
       </AuthProvider>,
     );
 
-    // Verify user state is signed-in
+    // Verify user state is signed in
     expect(screen.getByTestId("user-state").textContent).toBe("signed-in");
   });
 
