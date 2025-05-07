@@ -2,21 +2,23 @@
 
 import { beforeEach, describe, expect, it, vi, Mock } from "vitest";
 import { cleanup, render, screen, fireEvent } from "@testing-library/react";
+import { useFlags } from "launchdarkly-react-client-sdk";
 
 import {
   mockUser,
   mockAnalytics,
   mockSignInWithGoogle,
   authContextLoading,
-  authContextLoggedOut,
-  authContextLoggedIn,
+  mockAuthContextLoggedOut,
+  mockAuthContextLoggedIn,
 } from "@/test-utils";
-import { UserDisplay, SIGN_OUT_BUTTON_TEXT } from "./UserDisplay";
 import { AuthContext } from "@/contexts/authContext";
+import { getFirebaseAnalytics, trackEvent } from "@/lib/firebase";
+import { UserDisplay, SIGN_OUT_BUTTON_TEXT } from "./UserDisplay";
 
 // Mock the LaunchDarkly useFlags hook
 vi.mock("launchdarkly-react-client-sdk", () => ({
-  useFlags: vi.fn().mockReturnValue({ killSwitchEnableGoogleSignIn: true }), // default mock return value
+  useFlags: vi.fn().mockReturnValue({ killSwitchEnableGoogleSignIn: true }),
 }));
 
 // Mock Firebase Analytics
@@ -30,21 +32,21 @@ vi.mock("@/lib/firebase", () => ({
   trackEvent: vi.fn(),
 }));
 
-// Import mocked libraries after mocking them
-import { useFlags } from "launchdarkly-react-client-sdk";
-import { getFirebaseAnalytics, trackEvent } from "@/lib/firebase";
-
 /**
  * UserDisplay tests
  */
 describe("UserDisplay", () => {
+  // Keep reference to the mocked trackEvent function for asserting calls
   const mockedTrackEvent = trackEvent as Mock;
 
   beforeEach(() => {
     cleanup();
     vi.resetAllMocks();
 
-    // Provide default return value for mocked functions
+    //
+    // Default return value for mocked functions
+    //
+    // enable Sign in with Google flag
     vi.mocked(useFlags).mockReturnValue({
       killSwitchEnableGoogleSignIn: true,
     });
@@ -63,7 +65,7 @@ describe("UserDisplay", () => {
 
   it("should render nothing when auth error occurs", () => {
     const authContextWithError = {
-      ...authContextLoggedOut,
+      ...mockAuthContextLoggedOut,
       authError: new Error("Auth error"),
     };
 
@@ -77,7 +79,7 @@ describe("UserDisplay", () => {
 
   it("should render user display name and sign out button when logged in", () => {
     render(
-      <AuthContext.Provider value={authContextLoggedIn}>
+      <AuthContext.Provider value={mockAuthContextLoggedIn}>
         <UserDisplay />
       </AuthContext.Provider>,
     );
@@ -93,7 +95,7 @@ describe("UserDisplay", () => {
 
   it("should call signOut when sign out button is clicked", () => {
     render(
-      <AuthContext.Provider value={authContextLoggedIn}>
+      <AuthContext.Provider value={mockAuthContextLoggedIn}>
         <UserDisplay />
       </AuthContext.Provider>,
     );
@@ -103,12 +105,12 @@ describe("UserDisplay", () => {
     fireEvent.click(signOutButton);
 
     // Verify that signOut was called
-    expect(authContextLoggedIn.signOut).toHaveBeenCalled();
+    expect(mockAuthContextLoggedIn.signOut).toHaveBeenCalled();
   });
 
   it("should render Google sign-in button when logged out and feature flag is enabled", () => {
     render(
-      <AuthContext.Provider value={authContextLoggedOut}>
+      <AuthContext.Provider value={mockAuthContextLoggedOut}>
         <UserDisplay />
       </AuthContext.Provider>,
     );
@@ -125,7 +127,7 @@ describe("UserDisplay", () => {
     });
 
     const { container } = render(
-      <AuthContext.Provider value={authContextLoggedOut}>
+      <AuthContext.Provider value={mockAuthContextLoggedOut}>
         <UserDisplay />
       </AuthContext.Provider>,
     );
@@ -140,7 +142,7 @@ describe("UserDisplay", () => {
     mockSignInWithGoogle.mockResolvedValue({ uid: "test-uid" });
 
     render(
-      <AuthContext.Provider value={authContextLoggedOut}>
+      <AuthContext.Provider value={mockAuthContextLoggedOut}>
         <UserDisplay />
       </AuthContext.Provider>,
     );

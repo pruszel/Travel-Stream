@@ -1,6 +1,6 @@
 // frontend/src/utils/tripService.ts
 
-import { AUTH_ERROR_MESSAGE } from "@/constants.ts";
+import { FRIENDLY_ERROR_MESSAGES } from "@/constants.ts";
 
 export interface BaseTrip {
   name: string;
@@ -26,12 +26,6 @@ export const API_BASE_URL =
   import.meta.env.MODE === "production"
     ? "https://api.travelstreamapp.com"
     : "http://localhost:8000";
-
-export const FRIENDLY_ERROR_MESSAGES = {
-  unauthorized: AUTH_ERROR_MESSAGE,
-  server: `This app is experiencing issues and is temporarily unavailable. Developers are working on it. Please try again later.`,
-  general: `Something went wrong. Please try again.`,
-};
 
 export type ApiErrorType = keyof typeof FRIENDLY_ERROR_MESSAGES;
 

@@ -4,17 +4,28 @@ import * as React from "react";
 import { useCallback, useContext } from "react";
 import { useNavigate } from "react-router";
 
-import { BaseTrip, createTrip } from "@/utils/tripService.ts";
-import { ToastContext } from "@/contexts/toastContext.ts";
-import { convertFormDataToStringSafely } from "@/utils/utils.ts";
-import { AuthContext } from "@/contexts/authContext.ts";
-import { trackEvent } from "@/lib/firebase.ts";
+import { BaseTrip, createTrip } from "@/utils/tripService";
+import { ToastContext } from "@/contexts/toastContext";
+import { convertFormDataToStringSafely } from "@/utils/utils";
+import { AuthContext } from "@/contexts/authContext";
+import { trackEvent } from "@/lib/firebase";
 
 export const TRIP_NEW_PAGE_HEADER = "New Trip";
 export const TRIP_NEW_PAGE_FORM_NAME = "new-trip-form";
 export const TRIP_NEW_PAGE_FORM_ACCESSIBLE_NAME = "New Trip Form";
+export const CANCEL_BUTTON_TEXT = "Cancel";
+export const TRIP_ADD_SUCCESS_MESSAGE = "Trip added successfully.";
+const ERROR_MESSAGE_NO_USER =
+  "Error while rendering TripNewPage: No Firebase user found.";
 
 export function TripNewPage() {
+  const { firebaseUser } = useContext(AuthContext);
+
+  if (!firebaseUser) {
+    console.error(ERROR_MESSAGE_NO_USER);
+    return null;
+  }
+
   return (
     <>
       <section>
@@ -47,7 +58,7 @@ function AddTripForm() {
         const token = await firebaseUser.getIdToken();
         const response = await createTrip(token, newTrip);
         if (response.data) {
-          addToast("success", "Trip added successfully.");
+          addToast("success", TRIP_ADD_SUCCESS_MESSAGE);
           void trackEvent("add_trip");
           void navigate(`/trips/${response.data.id.toString()}`);
         }
@@ -136,7 +147,7 @@ function AddTripForm() {
               void navigate("/trips");
             }}
           >
-            Cancel
+            {CANCEL_BUTTON_TEXT}
           </button>
           <button type="submit" className="btn btn-primary self-start">
             Submit

@@ -1,7 +1,7 @@
 // frontend/src/layouts/TripsLayout.tsx
 
-import { useContext } from "react";
-import { Navigate, Outlet } from "react-router";
+import { useContext, useEffect } from "react";
+import { Outlet, useNavigate } from "react-router";
 
 import { AUTH_ERROR_MESSAGE } from "@/constants.ts";
 import { ToastContext } from "@/contexts/toastContext.ts";
@@ -15,11 +15,14 @@ export function TripsLayout() {
   const { firebaseUser, isAuthStateLoading, authError } =
     useContext(AuthContext);
   const { addToast } = useContext(ToastContext);
+  const navigate = useNavigate();
 
   // Redirect to login page if not authenticated
-  if (!firebaseUser) {
-    return <Navigate to="/login" replace />;
-  }
+  useEffect(() => {
+    if (!firebaseUser) {
+      void navigate("/login", { replace: true });
+    }
+  }, [firebaseUser, navigate]);
 
   // Show loading state
   if (isAuthStateLoading) {
