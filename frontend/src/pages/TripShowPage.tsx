@@ -3,34 +3,44 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
+import { getTrip, deleteTrip, Trip } from "@/utils/tripService";
+import { ToastContext } from "@/contexts/toastContext";
+import { BackButton } from "@/components/BackButton";
+import { AuthContext } from "@/contexts/authContext";
+import { trackEvent } from "@/lib/firebase";
 import {
   FRIENDLY_ERROR_MESSAGES,
-  getTrip,
-  deleteTrip,
-  Trip,
-} from "@/utils/tripService.ts";
-import { ToastContext } from "@/contexts/toastContext.ts";
-import { BackButton } from "@/components/BackButton.tsx";
-import { AuthContext } from "@/contexts/authContext.ts";
-import { trackEvent } from "@/lib/firebase.ts";
+  TRIP_DELETED_SUCCESS_MESSAGE,
+} from "@/constants";
+
+export const DELETE_BUTTON_TEXT = "Delete";
+export const EDIT_BUTTON_TEXT = "Edit Trip";
 
 export function TripShowPage() {
   const { addToast } = useContext(ToastContext);
   const { firebaseUser } = useContext(AuthContext);
+  const navigate = useNavigate();
   const { id: idParam } = useParams();
-  if (!idParam) {
-    throw new Error("Trip ID is required");
-  }
-  const tripId = parseInt(idParam);
-  const [trip, setTrip] = useState<Trip | null>(null);
 
+  // Serve 404 if no trip ID is given in the URL
+  useEffect(() => {
+    if (!idParam) {
+      console.error("Trip ID parameter is missing in the URL.");
+      void navigate("/404", { replace: true });
+    }
+  }, [idParam, navigate]);
+
+  const tripId = parseInt(idParam ?? "");
+  const [tripDetails, setTripDetails] = useState<Trip | null>(null);
+
+  // Fetch trip details from the api
   useEffect(() => {
     const handleLoadingTripDetails = async () => {
-      if (!firebaseUser) return;
+      if (!firebaseUser) return; // TODO: refactor this: 1) add console.error message 2) reduce duplicated code in all trip pages
       const token = await firebaseUser.getIdToken();
       const response = await getTrip(token, tripId);
       if (response.data) {
-        setTrip(response.data);
+        setTripDetails(response.data);
       } else if (response.error) {
         console.error("Error loading trip details: ", response.error.message);
         addToast("error", FRIENDLY_ERROR_MESSAGES.general);
@@ -38,35 +48,33 @@ export function TripShowPage() {
     };
 
     void handleLoadingTripDetails();
-  }, [firebaseUser, setTrip, tripId, addToast]);
+  }, [firebaseUser, setTripDetails, tripId, addToast]);
+
+  if (!firebaseUser) {
+    console.error(
+      "Error while rendering TripShowPage: No Firebase user found.",
+    );
+    return null;
+  }
 
   return (
     <>
-      <TripDetailsHeader trip={trip} />
-      <TripDetails trip={trip} />
+      <TripDetailsHeader tripDetails={tripDetails} />
+      <TripDetails tripDetails={tripDetails} />
     </>
   );
 }
 
 interface TripDetailsHeaderProps {
-  trip: Trip | null;
+  tripDetails: Trip | null;
 }
 
-function TripDetailsHeader({ trip }: TripDetailsHeaderProps) {
+function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
   const { firebaseUser } = useContext(AuthContext);
   const { addToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
-  if (!trip || !firebaseUser) return null;
-
-  const handleEditTripButtonClick = () => {
-    async function navigateToTripEditPage() {
-      if (!trip) return;
-      await navigate(`/trips/${trip.id.toString()}/edit`);
-    }
-
-    void navigateToTripEditPage();
-  };
+  if (!tripDetails || !firebaseUser) return null;
 
   const handleDeleteTripButtonClick = () => {
     const confirmDelete = confirm(
@@ -77,12 +85,12 @@ function TripDetailsHeader({ trip }: TripDetailsHeaderProps) {
     }
 
     async function handleTripDeletion() {
-      if (!trip || !firebaseUser) return;
+      if (!tripDetails || !firebaseUser) return;
       const token = await firebaseUser.getIdToken();
-      const response = await deleteTrip(token, trip.id);
+      const response = await deleteTrip(token, tripDetails.id);
 
       if (!response.error) {
-        addToast("success", "Trip deleted successfully.");
+        addToast("success", TRIP_DELETED_SUCCESS_MESSAGE);
         void trackEvent("delete_trip", { source: "show_page" });
         await navigate("/trips");
       } else {
@@ -101,21 +109,23 @@ function TripDetailsHeader({ trip }: TripDetailsHeaderProps) {
       </div>
       <div className="flex flex-col gap-6">
         <div className="flex justify-between gap-4">
-          <h2 className="text-2xl font-bold">{trip.name}</h2>
+          <h2 className="text-2xl font-bold">{tripDetails.name}</h2>
           <div className="flex gap-2">
             <button
               type="button"
               className="btn self-start"
-              onClick={handleEditTripButtonClick}
+              onClick={() => {
+                void navigate(`/trips/${tripDetails.id.toString()}/edit`);
+              }}
             >
-              Edit
+              {EDIT_BUTTON_TEXT}
             </button>
             <button
               type="button"
               className="btn btn-soft btn-error"
               onClick={handleDeleteTripButtonClick}
             >
-              Delete
+              {DELETE_BUTTON_TEXT}
             </button>
           </div>
         </div>
@@ -125,28 +135,28 @@ function TripDetailsHeader({ trip }: TripDetailsHeaderProps) {
 }
 
 interface TripDetailsProps {
-  trip: Trip | null;
+  tripDetails: Trip | null;
 }
 
-function TripDetails({ trip }: TripDetailsProps) {
+function TripDetails({ tripDetails }: TripDetailsProps) {
   const { firebaseUser } = useContext(AuthContext);
 
-  if (!trip || !firebaseUser) return null;
+  if (!tripDetails || !firebaseUser) return null;
 
   const daysUntilStartDate = Math.floor(
-    (new Date(trip.start_date).getTime() - new Date().getTime()) /
+    (new Date(tripDetails.start_date).getTime() - new Date().getTime()) /
       (1000 * 3600 * 24),
   );
 
   const daysUntilEndDate = Math.floor(
-    (new Date(trip.end_date).getTime() - new Date().getTime()) /
+    (new Date(tripDetails.end_date).getTime() - new Date().getTime()) /
       (1000 * 3600 * 24),
   );
 
   return (
     <>
       <div className="flex flex-col gap-2">
-        <h3 className="font-bold">{trip.destination}</h3>
+        <h3 className="font-bold">{tripDetails.destination}</h3>
 
         {daysUntilStartDate < 0 && daysUntilEndDate < 0 && (
           <p className="text-gray-700 dark:text-gray-400">Trip passed</p>
@@ -167,9 +177,9 @@ function TripDetails({ trip }: TripDetailsProps) {
         )}
 
         <p>
-          {trip.start_date} - {trip.end_date}
+          {tripDetails.start_date} - {tripDetails.end_date}
         </p>
-        <p>{trip.description}</p>
+        <p>{tripDetails.description}</p>
       </div>
     </>
   );

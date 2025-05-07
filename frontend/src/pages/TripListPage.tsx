@@ -11,18 +11,21 @@ import {
 import { useNavigate } from "react-router";
 import { Trash2 } from "lucide-react";
 
-import { AuthContext } from "@/contexts/authContext.ts";
-import { ToastContext } from "@/contexts/toastContext.ts";
-import {
-  FRIENDLY_ERROR_MESSAGES,
-  deleteTrip,
-  getTrips,
-  Trip,
-} from "@/utils/tripService.ts";
-import { trackEvent } from "@/lib/firebase.ts";
+import { AuthContext } from "@/contexts/authContext";
+import { ToastContext } from "@/contexts/toastContext";
+import { deleteTrip, getTrips, Trip } from "@/utils/tripService";
+import { trackEvent } from "@/lib/firebase";
+import { FRIENDLY_ERROR_MESSAGES } from "@/constants";
 
-export const TRIP_LIST_PAGE_HEADER = "My Trips";
-export const TRIP_LIST_PAGE_ADD_TRIP_BUTTON_TEXT = "Add Trip";
+export const PAGE_HEADER = "My Trips";
+export const ADD_TRIP_BUTTON_TEXT = "Add Trip";
+export const NO_TRIPS_TEXT = "No trips found.";
+export const DELETE_TRIP_BUTTON_LABEL = "Delete trip";
+
+const ERROR_MESSAGE_LOADING_TRIPS_NO_USER =
+  "Error while loading user trips: No Firebase user found.";
+const ERROR_MESSAGE_NO_USER =
+  "Error while rendering TripListPage: No Firebase user found.";
 
 export function TripListPage() {
   const { firebaseUser } = useContext(AuthContext);
@@ -33,9 +36,14 @@ export function TripListPage() {
   // Load the user's trips when the user is authenticated
   useEffect(() => {
     const loadUserTrips = async () => {
-      if (!firebaseUser) throw new Error("User does not exist!");
+      if (!firebaseUser) {
+        // TODO: refactor this repeated logic in every trip page
+        console.error(ERROR_MESSAGE_LOADING_TRIPS_NO_USER);
+        return;
+      }
       const token = await firebaseUser.getIdToken();
       if (!token) {
+        // TODO: refactor this repeated logic in every trip page
         console.error("No Firebase token found for user: ", firebaseUser);
         addToast("error", FRIENDLY_ERROR_MESSAGES.general);
         return;
@@ -47,18 +55,22 @@ export function TripListPage() {
         console.error("Error loading user trips: ", response.error.message);
         addToast("error", FRIENDLY_ERROR_MESSAGES.general);
       }
+      return;
     };
     void loadUserTrips();
   }, [firebaseUser, addToast]);
 
-  if (!firebaseUser) return null;
+  if (!firebaseUser) {
+    console.error(ERROR_MESSAGE_NO_USER);
+    return null;
+  }
 
   return (
     <>
       <section>
         <div className="flex flex-col gap-4 sm:gap-0">
           <div className="flex justify-between">
-            <h2 className="text-2xl font-bold">{TRIP_LIST_PAGE_HEADER}</h2>
+            <h2 className="text-2xl font-bold">{PAGE_HEADER}</h2>
             <button
               type="button"
               className="btn btn-primary self-end"
@@ -66,7 +78,7 @@ export function TripListPage() {
                 void navigate("/trips/new");
               }}
             >
-              {TRIP_LIST_PAGE_ADD_TRIP_BUTTON_TEXT}
+              {ADD_TRIP_BUTTON_TEXT}
             </button>
           </div>
           <TripList userTrips={userTrips} setUserTrips={setUserTrips} />
@@ -121,7 +133,7 @@ function TripList({ userTrips, setUserTrips }: TripListProps) {
       <>
         <div>
           <p className="text-gray-500 dark:text-gray-300 mt-4">
-            No trips to display.
+            {NO_TRIPS_TEXT}
           </p>
         </div>
       </>
@@ -146,7 +158,7 @@ function TripList({ userTrips, setUserTrips }: TripListProps) {
           </div>
           <button
             type="button"
-            aria-label="Delete trip"
+            aria-label={DELETE_TRIP_BUTTON_LABEL}
             aria-haspopup="dialog"
             className="cursor-pointer text-error can-hover:text-error/40 hover:text-error z-10"
             onClick={(event) => {

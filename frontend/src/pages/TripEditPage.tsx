@@ -4,19 +4,18 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 
-import {
-  FRIENDLY_ERROR_MESSAGES,
-  getTrip,
-  Trip,
-  updateTrip,
-} from "@/utils/tripService";
+import { getTrip, Trip, updateTrip } from "@/utils/tripService";
 import { ToastContext } from "@/contexts/toastContext";
 import { AuthContext } from "@/contexts/authContext";
 import { convertFormDataToStringSafely } from "@/utils/utils";
-import { trackEvent } from "@/lib/firebase.ts";
+import { trackEvent } from "@/lib/firebase";
+import { FRIENDLY_ERROR_MESSAGES } from "@/constants.ts";
 
 export const TRIP_EDIT_PAGE_FORM_NAME = "edit-trip-form";
 export const TRIP_EDIT_PAGE_FORM_ACCESSIBLE_NAME = "Edit Trip Form";
+export const TRIP_EDIT_PAGE_CANCEL_BUTTON_TEXT = "Cancel";
+export const TRIP_EDIT_PAGE_SUBMIT_BUTTON_TEXT = "Save";
+export const TRIP_UPDATE_SUCCESS_MESSAGE = "Trip updated successfully.";
 
 export function TripEditPage() {
   const { id: idParam } = useParams();
@@ -87,7 +86,7 @@ export function EditTripForm({ tripId }: EditTripFormProps) {
 
         const response = await updateTrip(token, tripId, updatedTrip);
         if (response.data) {
-          addToast("success", "Trip updated successfully.");
+          addToast("success", TRIP_UPDATE_SUCCESS_MESSAGE);
           void trackEvent("update_trip");
           void navigate(`/trips/${tripId.toString()}`);
         } else if (response.error) {
@@ -101,6 +100,10 @@ export function EditTripForm({ tripId }: EditTripFormProps) {
     },
     [firebaseUser, tripId, addToast, navigate],
   );
+
+  if (!firebaseUser) {
+    return null;
+  }
 
   if (!trip) {
     return <p>Loading trip details...</p>;
@@ -193,10 +196,10 @@ export function EditTripForm({ tripId }: EditTripFormProps) {
               void navigateToTripShowPage();
             }}
           >
-            Cancel
+            {TRIP_EDIT_PAGE_CANCEL_BUTTON_TEXT}
           </button>
           <button type="submit" className="btn btn-primary self-start">
-            Save
+            {TRIP_EDIT_PAGE_SUBMIT_BUTTON_TEXT}
           </button>
         </div>
       </form>

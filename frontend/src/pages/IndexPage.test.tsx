@@ -3,41 +3,34 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, cleanup, waitFor } from "@testing-library/react";
 import { BrowserRouter, MemoryRouter, Routes, Route } from "react-router";
-import { User } from "firebase/auth";
 
-import * as tripService from "@/utils/tripService";
+import { getTrips } from "@/utils/tripService";
 import { AuthContext } from "@/contexts/authContext";
 import { ToastContext } from "@/contexts/toastContext";
 import { IndexPage, SIGN_IN_TEXT } from "@/pages/IndexPage";
-import { TripListPage, TRIP_LIST_PAGE_HEADER } from "@/pages/TripListPage.tsx";
-import { TripsLayout } from "@/layouts/TripsLayout.tsx";
+import { TripListPage, PAGE_HEADER } from "@/pages/TripListPage";
+import {
+  mockAuthContextLoggedIn,
+  mockAuthContextLoggedOut,
+  mockGetIdToken,
+  mockToastContextValue,
+} from "@/test-utils";
 
-vi.mock("@/utils/tripService", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("@/utils/tripService")>();
-  return {
-    ...actual,
-    getTrips: vi.fn(),
-  };
-});
+vi.mock("@/utils/tripService", () => ({
+  getTrips: vi.fn(),
+}));
 
 describe("<IndexPage />", () => {
   beforeEach(() => {
     cleanup();
-    vi.resetAllMocks();
+    vi.restoreAllMocks();
+    vi.mocked(mockGetIdToken).mockResolvedValue("fake-token");
   });
 
-  it("renders the sign in button when not logged in", () => {
-    // mock AuthContext to simulate not logged in state
-    const contextValue = {
-      firebaseUser: null,
-      isAuthStateLoading: false,
-      authError: undefined,
-      signInWithGoogle: vi.fn(),
-      signOut: vi.fn(),
-    };
-
+  // authContextLoggedIn.firebaseUser.getIdToken.mockResolvedValue("fake-token");
+  it("renders the sign in button when logged out", () => {
     render(
-      <AuthContext.Provider value={contextValue}>
+      <AuthContext.Provider value={mockAuthContextLoggedOut}>
         <BrowserRouter>
           <IndexPage />
         </BrowserRouter>
@@ -48,36 +41,18 @@ describe("<IndexPage />", () => {
   });
 
   it("redirects to Trips List Page when user is logged in", async () => {
-    // mock AuthContext to simulate logged in state
-    const authContextValue = {
-      firebaseUser: {
-        uid: "12345",
-        getIdToken: vi.fn().mockResolvedValue("fake-token"),
-      } as unknown as User,
-      isAuthStateLoading: false,
-      authError: undefined,
-      signInWithGoogle: vi.fn(),
-      signOut: vi.fn(),
-    };
-
-    const toastContextValue = {
-      addToast: vi.fn(),
-      removeToast: vi.fn(),
-      toasts: [],
-    };
-
-    const mockedGetTrips = vi.mocked(tripService.getTrips);
-    mockedGetTrips.mockResolvedValue({ data: [], error: undefined });
+    vi.mocked(getTrips).mockResolvedValue({
+      data: [],
+      error: undefined,
+    });
 
     render(
-      <AuthContext.Provider value={authContextValue}>
-        <ToastContext.Provider value={toastContextValue}>
+      <AuthContext.Provider value={mockAuthContextLoggedIn}>
+        <ToastContext.Provider value={mockToastContextValue}>
           <MemoryRouter initialEntries={["/"]}>
             <Routes>
               <Route path="/" element={<IndexPage />} />
-              <Route element={<TripsLayout />}>
-                <Route path="/trips" element={<TripListPage />} />
-              </Route>
+              <Route path="/trips" element={<TripListPage />} />
             </Routes>
           </MemoryRouter>
         </ToastContext.Provider>
@@ -86,7 +61,7 @@ describe("<IndexPage />", () => {
 
     // Wait for the redirect and TripListPage to render
     await waitFor(() => {
-      expect(screen.getByText(TRIP_LIST_PAGE_HEADER)).toBeInTheDocument();
+      expect(screen.getByText(PAGE_HEADER)).toBeInTheDocument();
     });
 
     expect(screen.queryByText(SIGN_IN_TEXT)).not.toBeInTheDocument();

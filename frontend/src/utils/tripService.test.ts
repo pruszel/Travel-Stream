@@ -9,10 +9,10 @@ import {
   updateTrip,
   deleteTrip,
   API_BASE_URL,
-  FRIENDLY_ERROR_MESSAGES,
   type Trip,
   type BaseTrip,
 } from "./tripService";
+import { FRIENDLY_ERROR_MESSAGES } from "@/constants.ts";
 
 beforeEach(() => {
   // Stub the global fetch function

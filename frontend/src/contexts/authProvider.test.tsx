@@ -2,10 +2,16 @@
 
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
+import { useContext } from "react";
+import {
+  useAuthState,
+  useSignInWithGoogle,
+  useSignOut,
+} from "react-firebase-hooks/auth";
+
 import { AuthProvider } from "./authProvider";
 import { AuthContext } from "./authContext";
-import { useContext } from "react";
-import { User } from "firebase/auth";
+import { mockUser } from "@/test-utils";
 
 // Mock the firebase hooks module
 vi.mock("react-firebase-hooks/auth", () => ({
@@ -18,13 +24,6 @@ vi.mock("react-firebase-hooks/auth", () => ({
 vi.mock("@/lib/firebase.ts", () => ({
   auth: {},
 }));
-
-// Import mocked modules
-import {
-  useAuthState,
-  useSignInWithGoogle,
-  useSignOut,
-} from "react-firebase-hooks/auth";
 
 // Test component to consume the context
 const TestComponent = () => {
@@ -65,7 +64,7 @@ const TestComponent = () => {
  * AuthProvider tests
  */
 describe("AuthProvider", () => {
-  const mockSignIn = vi.fn().mockResolvedValue({ user: { uid: "123" } });
+  const mockSignIn = vi.fn().mockResolvedValue({ user: mockUser });
   const mockSignOut = vi.fn().mockResolvedValue(true);
 
   beforeEach(() => {
@@ -100,7 +99,6 @@ describe("AuthProvider", () => {
 
   it("should reflect authenticated state when user exists", () => {
     // Mock authenticated user
-    const mockUser = { uid: "123", displayName: "Test User" } as User;
     vi.mocked(useAuthState).mockReturnValue([mockUser, false, undefined]);
 
     render(

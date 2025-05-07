@@ -9,7 +9,11 @@ import {
   fireEvent,
 } from "@testing-library/react";
 import { BrowserRouter, MemoryRouter, Routes, Route } from "react-router";
+import { useFlags } from "launchdarkly-react-client-sdk";
+import { logEvent } from "firebase/analytics";
 
+import { getFirebaseAnalytics } from "@/lib/firebase";
+import { getTrips } from "@/utils/tripService";
 import { AuthContext } from "@/contexts/authContext";
 import { IndexPage } from "@/pages/IndexPage";
 import { TripListPage } from "@/pages/TripListPage";
@@ -21,8 +25,8 @@ import {
 } from "@/pages/LoginPage";
 import {
   authContextLoading,
-  authContextLoggedIn,
-  authContextLoggedOut,
+  mockAuthContextLoggedIn,
+  mockAuthContextLoggedOut,
   mockSignInWithGoogle,
   mockGetIdToken,
   mockAnalytics,
@@ -30,7 +34,7 @@ import {
 
 // Mock the LaunchDarkly useFlags hook
 vi.mock("launchdarkly-react-client-sdk", () => ({
-  useFlags: vi.fn().mockReturnValue({ killSwitchEnableGoogleSignIn: true }), // default mock return value
+  useFlags: vi.fn(),
 }));
 
 // Mock Firebase Analytics
@@ -48,22 +52,20 @@ vi.mock("@/utils/tripService", () => ({
   getTrips: vi.fn(),
 }));
 
-import { useFlags } from "launchdarkly-react-client-sdk";
-import { logEvent } from "firebase/analytics";
-import { getFirebaseAnalytics } from "@/lib/firebase";
-import { getTrips } from "@/utils/tripService";
-
 /**
  * LoginPage tests
  */
 describe("<LoginPage />", () => {
+  // Keep reference to the mocked logEvent function for asserting calls
   const mockedLogEvent = logEvent as Mock;
 
   beforeEach(() => {
     cleanup();
     vi.resetAllMocks();
 
-    // Provide default return value for mocked functions
+    //
+    // Default return value for mocked functions
+    //
     vi.mocked(useFlags).mockReturnValue({
       killSwitchEnableGoogleSignIn: true,
     });
@@ -91,7 +93,7 @@ describe("<LoginPage />", () => {
 
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextLoggedOut}>
+        <AuthContext.Provider value={mockAuthContextLoggedOut}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
@@ -105,7 +107,7 @@ describe("<LoginPage />", () => {
   it("renders sign in button when feature flag is on", () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextLoggedOut}>
+        <AuthContext.Provider value={mockAuthContextLoggedOut}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
@@ -122,7 +124,7 @@ describe("<LoginPage />", () => {
     });
 
     render(
-      <AuthContext.Provider value={authContextLoggedIn}>
+      <AuthContext.Provider value={mockAuthContextLoggedIn}>
         <MemoryRouter initialEntries={["/login"]}>
           <Routes>
             <Route path="/" element={<IndexPage />} />
@@ -147,7 +149,7 @@ describe("<LoginPage />", () => {
   it("starts Google sign-in process when button clicked", async () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextLoggedOut}>
+        <AuthContext.Provider value={mockAuthContextLoggedOut}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
@@ -162,13 +164,12 @@ describe("<LoginPage />", () => {
     });
   });
 
-  it("logs the login analytics event", async () => {
+  it("tracks the login analytics event", async () => {
     mockSignInWithGoogle.mockResolvedValue({});
-    const mockAnalytics = await getFirebaseAnalytics();
 
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextLoggedOut}>
+        <AuthContext.Provider value={mockAuthContextLoggedOut}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
