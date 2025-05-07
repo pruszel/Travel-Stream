@@ -18,7 +18,7 @@ export const EDIT_BUTTON_TEXT = "Edit Trip";
 
 export function TripShowPage() {
   const { addToast } = useContext(ToastContext);
-  const { firebaseUser } = useContext(AuthContext);
+  const { firebaseUser, isAuthStateLoading } = useContext(AuthContext);
   const navigate = useNavigate();
   const { id: idParam } = useParams();
 
@@ -50,12 +50,12 @@ export function TripShowPage() {
     void handleLoadingTripDetails();
   }, [firebaseUser, setTripDetails, tripId, addToast]);
 
-  if (!firebaseUser) {
+  if (!isAuthStateLoading && !firebaseUser) {
     console.error(
       "Error while rendering TripShowPage: No Firebase user found.",
     );
-    return null;
   }
+  if (!firebaseUser) return null;
 
   return (
     <>
@@ -92,7 +92,7 @@ function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
       if (!response.error) {
         addToast("success", TRIP_DELETED_SUCCESS_MESSAGE);
         void trackEvent("delete_trip", { source: "show_page" });
-        await navigate("/trips");
+        void navigate("/trips");
       } else {
         console.error("Error deleting trip: ", response.error.message);
         addToast("error", FRIENDLY_ERROR_MESSAGES.general);
