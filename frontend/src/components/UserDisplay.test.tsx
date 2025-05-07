@@ -27,18 +27,18 @@ vi.mock("firebase/analytics", () => ({
 // Mock Firebase lib
 vi.mock("@/lib/firebase", () => ({
   getFirebaseAnalytics: vi.fn().mockReturnValue({}),
-  trackLoginEvent: vi.fn(),
+  trackEvent: vi.fn(),
 }));
 
 // Import mocked libraries after mocking them
 import { useFlags } from "launchdarkly-react-client-sdk";
-import { getFirebaseAnalytics, trackLoginEvent } from "@/lib/firebase";
+import { getFirebaseAnalytics, trackEvent } from "@/lib/firebase";
 
 /**
  * UserDisplay tests
  */
 describe("UserDisplay", () => {
-  const mockedTrackLoginEvent = trackLoginEvent as Mock;
+  const mockedTrackEvent = trackEvent as Mock;
 
   beforeEach(() => {
     cleanup();
@@ -152,9 +152,9 @@ describe("UserDisplay", () => {
     // Verify that signInWithGoogle was called
     expect(mockSignInWithGoogle).toHaveBeenCalled();
 
-    // Verify that trackLoginEvent was called
+    // Verify that trackEvent was called
     await vi.waitFor(() => {
-      expect(mockedTrackLoginEvent).toHaveBeenCalled();
+      expect(mockedTrackEvent).toHaveBeenCalled();
     });
   });
 });

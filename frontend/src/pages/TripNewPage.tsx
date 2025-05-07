@@ -8,6 +8,7 @@ import { BaseTrip, createTrip } from "@/utils/tripService.ts";
 import { ToastContext } from "@/contexts/toastContext.ts";
 import { convertFormDataToStringSafely } from "@/utils/utils.ts";
 import { AuthContext } from "@/contexts/authContext.ts";
+import { trackEvent } from "@/lib/firebase.ts";
 
 export const TRIP_NEW_PAGE_HEADER = "New Trip";
 export const TRIP_NEW_PAGE_FORM_NAME = "new-trip-form";
@@ -47,6 +48,7 @@ function AddTripForm() {
         const response = await createTrip(token, newTrip);
         if (response.data) {
           addToast("success", "Trip added successfully.");
+          void trackEvent("add_trip");
           void navigate(`/trips/${response.data.id.toString()}`);
         }
         (event.target as HTMLFormElement).reset();

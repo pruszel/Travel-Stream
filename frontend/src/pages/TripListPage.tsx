@@ -19,6 +19,7 @@ import {
   getTrips,
   Trip,
 } from "@/utils/tripService.ts";
+import { trackEvent } from "@/lib/firebase.ts";
 
 export const TRIP_LIST_PAGE_HEADER = "My Trips";
 export const TRIP_LIST_PAGE_ADD_TRIP_BUTTON_TEXT = "Add Trip";
@@ -103,6 +104,7 @@ function TripList({ userTrips, setUserTrips }: TripListProps) {
           });
 
           addToast("success", "Trip deleted successfully.");
+          void trackEvent("delete_trip", { source: "list_page" });
         } else {
           console.error("Error deleting trip: ", response.error.message);
           addToast("error", response.error.message);
