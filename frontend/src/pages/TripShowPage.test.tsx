@@ -31,7 +31,7 @@ import {
   TRIP_DELETED_SUCCESS_MESSAGE,
 } from "@/constants";
 import { TripEditPage } from "@/pages/TripEditPage";
-import { TripListPage } from "@/pages/TripListPage";
+import { PAGE_HEADER, TripListPage } from "@/pages/TripListPage";
 import { NOT_FOUND_PAGE_HEADER, NotFoundPage } from "@/pages/NotFoundPage";
 
 // Mock tripService
@@ -153,6 +153,30 @@ describe("<TripShowPage />", () => {
         "success",
         TRIP_DELETED_SUCCESS_MESSAGE,
       );
+    });
+  });
+
+  it("should redirect to TripListPage when the trip is successfully deleted", async () => {
+    render(
+      <MemoryRouter initialEntries={["/trips/1"]}>
+        <AuthContext.Provider value={mockAuthContextLoggedIn}>
+          <Routes>
+            <Route path="/trips/:id" element={<TripShowPage />} />
+            <Route path="/trips" element={<TripListPage />} />
+          </Routes>
+        </AuthContext.Provider>
+      </MemoryRouter>,
+    );
+
+    // Click the delete button
+    await waitFor(() => {
+      const deleteButton = screen.getByText(DELETE_BUTTON_TEXT);
+      fireEvent.click(deleteButton);
+    });
+
+    // Verify that the TripListPage is displayed
+    await waitFor(() => {
+      expect(screen.getByText(PAGE_HEADER)).toBeInTheDocument();
     });
   });
 
