@@ -208,7 +208,7 @@ describe("<TripShowPage />", () => {
     });
   });
 
-  it("should render nothing if the user is not logged in", async () => {
+  it("should render nothing if the user is not logged in", () => {
     // Mock console.error to suppress error messages in the test output
     vi.spyOn(console, "error").mockImplementation(() => {
       return;

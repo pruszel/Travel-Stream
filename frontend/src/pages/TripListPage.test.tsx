@@ -205,7 +205,7 @@ describe("<TripListPage />", () => {
     });
   });
 
-  it("should render nothing if the user is not authenticated (redirect to Login Page implemented by TripsLayout)", async () => {
+  it("should render nothing if the user is not authenticated (redirect to Login Page implemented by TripsLayout)", () => {
     // Mock console to suppress error messages in the test output
     vi.spyOn(console, "error").mockImplementation(() => {
       return;
