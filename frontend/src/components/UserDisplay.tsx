@@ -22,7 +22,7 @@ export function UserDisplay() {
   const handleGoogleButtonClick = useCallback(() => {
     async function performSignIn() {
       const user = await signInWithGoogle();
-      if (user) await trackEvent("login", { method: "Google" });
+      if (user) void trackEvent("login", { method: "Google" });
       return;
     }
 
