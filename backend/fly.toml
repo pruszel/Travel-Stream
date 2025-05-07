@@ -31,5 +31,5 @@ console_command = "/app/manage.py shell"
   cpus = 1
 
 [[statics]]
-  guest_path = "/code/static"
+  guest_path = "/app/static"
   url_prefix = "/static/"
