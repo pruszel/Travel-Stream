@@ -3,13 +3,14 @@
 import { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 
-import { AUTH_ERROR_MESSAGE } from "@/constants.ts";
-import { ToastContext } from "@/contexts/toastContext.ts";
-import { ToastProvider } from "@/contexts/toastProvider.tsx";
-import { Toast } from "@/components/Toast.tsx";
-import { Header } from "@/components/Header.tsx";
-import { ContentWrapper } from "@/components/ContentWrapper.tsx";
-import { AuthContext } from "@/contexts/authContext.ts";
+import { AUTH_ERROR_MESSAGE } from "@/constants";
+import { ToastContext } from "@/contexts/toastContext";
+import { ToastProvider } from "@/contexts/toastProvider";
+import { Toast } from "@/components/Toast";
+import { Header } from "@/components/Header";
+import { ContentWrapper } from "@/components/ContentWrapper";
+import { AuthContext } from "@/contexts/authContext";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 export function TripsLayout() {
   const { firebaseUser, isAuthStateLoading, authError } =
@@ -19,14 +20,14 @@ export function TripsLayout() {
 
   // Redirect to login page if not authenticated
   useEffect(() => {
-    if (!firebaseUser) {
+    if (!isAuthStateLoading && !firebaseUser) {
       void navigate("/login", { replace: true });
     }
   }, [firebaseUser, navigate]);
 
   // Show loading state
   if (isAuthStateLoading) {
-    return <div className="loading loading-spinner loading-lg"></div>;
+    return <LoadingScreen />;
   }
 
   if (authError) {
