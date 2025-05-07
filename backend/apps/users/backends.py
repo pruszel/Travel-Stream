@@ -31,6 +31,7 @@ def _verify_token(firebase_token: str) -> dict | None:
     ):
         return None
 
+
 def _parse_http_x_forwarded_for_header(request: HttpRequest) -> str | None:
     """
     Parse the X-Forwarded-For header as a comma-separated list of IPs
@@ -47,6 +48,7 @@ def _parse_http_x_forwarded_for_header(request: HttpRequest) -> str | None:
         ip = x_forwarded_for.split(",")[0]
         return ip
     return None
+
 
 class FirebaseAuthenticationBackend(BaseBackend):
     """
