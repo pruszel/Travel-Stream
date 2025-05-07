@@ -23,6 +23,14 @@ RUN set -ex && \
 
 COPY . .
 
+# Provide dummy values for secrets needed during the build
+ENV SECRET_KEY=dummy-secret-key
+ENV DATABASE_URL=postgresql://user:password@host:1234/dbname
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+
+# Copy static files to the /app/static directory
+RUN python manage.py collectstatic --noinput
+
 EXPOSE 8000
 
 CMD ["gunicorn", "--bind", ":8000", "--workers", "2", "travel_stream.wsgi"]
