@@ -45,7 +45,7 @@ def _parse_http_x_forwarded_for_header(request: HttpRequest) -> str | None:
     """
     x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
-        ip = x_forwarded_for.split(",")[0]
+        ip = x_forwarded_for.split(",")[0].strip()
         return ip
     return None
 
