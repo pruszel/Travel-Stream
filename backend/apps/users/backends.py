@@ -1,7 +1,7 @@
 from django.contrib.auth.backends import BaseBackend
 from django.utils import timezone
 from firebase_admin import auth
-from googleapiclient.http import HttpRequest
+from django.http import HttpRequest
 
 from .models import User
 
@@ -30,6 +30,24 @@ def _verify_token(firebase_token: str) -> dict | None:
         auth.UserDisabledError,
     ):
         return None
+
+
+def _parse_http_x_forwarded_for_header(request: HttpRequest) -> str | None:
+    """
+    Parse the X-Forwarded-For header as a comma-separated list of IPs
+    to get the client's IP address.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        str: The client's IP address or None if not found.
+    """
+    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(",")[0].strip()
+        return ip
+    return None
 
 
 class FirebaseAuthenticationBackend(BaseBackend):
@@ -67,7 +85,7 @@ class FirebaseAuthenticationBackend(BaseBackend):
             user.set_unusable_password()
 
         user.last_login_at = timezone.now()
-        user.last_login_ip = request.META.get("HTTP_X_FORWARDED_FOR")
+        user.last_login_ip = _parse_http_x_forwarded_for_header(request)
         user.last_login_user_agent = request.META.get("HTTP_USER_AGENT", "unknown")
         user.save()
 
