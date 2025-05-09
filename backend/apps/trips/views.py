@@ -47,5 +47,10 @@ class FlightViewSet(OwnerViewSet):
         queryset = super().get_queryset()
         trip_id = self.request.query_params.get("trip_id")
         if trip_id is not None:
-            queryset = queryset.filter(trip_id=trip_id)
+            try:
+                trip_id = int(trip_id)
+                queryset = queryset.filter(trip_id=trip_id)
+            except ValueError:
+                # Optionally log the error or handle it as needed
+                pass
         return queryset
