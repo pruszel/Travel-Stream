@@ -46,6 +46,7 @@ class FlightSerializer(serializers.ModelSerializer):
 
         return super().create(validated_data)
 
+
 class TripSerializer(serializers.ModelSerializer):
     flights = FlightSerializer(many=True, read_only=True)
 
@@ -60,7 +61,7 @@ class TripSerializer(serializers.ModelSerializer):
             "end_date",
             "created_at",
             "updated_at",
-            "flights"
+            "flights",
         ]
         read_only_fields = ["created_at", "updated_at", "created_by"]
 

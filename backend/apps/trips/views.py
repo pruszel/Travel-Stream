@@ -1,8 +1,9 @@
 # backend/apps/trips/views.py
+
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import Trip, Flight
+from .models import Trip
 from .serializers import TripSerializer, FlightSerializer
 from apps.users.permissions import IsOwner
 

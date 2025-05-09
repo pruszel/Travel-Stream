@@ -144,7 +144,7 @@ def flight_data(trip):
 @pytest.fixture
 def flight(user, trip, flight_data):
     flight_data_copy = flight_data.copy()
-    trip_id = flight_data_copy.pop("trip_id")
+    flight_data_copy.pop("trip_id")
     return Flight.objects.create(created_by=user, trip=trip, **flight_data_copy)
 
 
@@ -152,7 +152,7 @@ def flight(user, trip, flight_data):
 def another_flight(another_user, another_trip, flight_data):
     flight_data_copy = flight_data.copy()
     flight_data_copy["trip_id"] = another_trip.id
-    trip_id = flight_data_copy.pop("trip_id")
+    flight_data_copy.pop("trip_id")
     return Flight.objects.create(
         created_by=another_user, trip=another_trip, **flight_data_copy
     )
@@ -217,6 +217,7 @@ class TestFlightViewSet:
     @pytest.mark.django_db
     def test_filter_by_trip_id(self, user, trip, flight, api_request_factory):
         """Test that flights can be filtered by trip_id."""
+
         # Create a second flight for the same user but different trip
         second_trip = Trip.objects.create(
             created_by=user,
@@ -226,7 +227,7 @@ class TestFlightViewSet:
             start_date=date(2023, 2, 1),
             end_date=date(2023, 2, 7),
         )
-        second_flight = Flight.objects.create(
+        Flight.objects.create(
             created_by=user,
             trip=second_trip,
             airline="Another Airline",
@@ -256,7 +257,10 @@ class TestFlightSerializer:
     def test_create_adds_user_as_created_by(
         self, user, trip, flight_data, api_request_factory
     ):
-        """Test that the FlightSerializer adds the user from the request as the created_by field."""
+        """
+        Test that the FlightSerializer adds the user
+        from the request as the created_by field.
+        """
         # Create a request with a user
         request = api_request_factory.post("/api/flights/")
         request.user = user
@@ -285,7 +289,10 @@ class TestFlightSerializer:
     def test_create_associates_with_correct_trip(
         self, user, trip, flight_data, api_request_factory
     ):
-        """Test that the FlightSerializer associates the flight with the correct trip."""
+        """
+        Test that the FlightSerializer associates the flight
+        with the correct trip.
+        """
         # Create a request with a user
         request = api_request_factory.post("/api/flights/")
         request.user = user
