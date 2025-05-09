@@ -43,7 +43,7 @@ class FlightViewSet(OwnerViewSet):
         Optionally restricts the returned flights to a given trip,
         by filtering against a `trip_id` query parameter in the URL.
         """
-        queryset = Flight.objects.all()
+        queryset = super().get_queryset()
         trip_id = self.request.query_params.get("trip_id")
         if trip_id is not None:
             queryset = queryset.filter(trip_id=trip_id)
