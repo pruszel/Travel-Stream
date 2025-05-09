@@ -5,13 +5,13 @@ from .models import Trip, Flight
 
 
 class FlightSerializer(serializers.ModelSerializer):
-    trip_id = serializers.IntegerField()
+    trip = serializers.PrimaryKeyRelatedField(queryset=Trip.objects.all())
 
     class Meta:
         model = Flight
         fields = [
             "id",
-            "trip_id",
+            "trip",
             "airline",
             "confirmation_number",
             "flight_number",
