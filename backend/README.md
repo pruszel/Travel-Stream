@@ -18,8 +18,18 @@ docker compose up backend
 
 ### Run tests
 
+Run once:
+
 ```bash
 docker compose exec backend pytest
+```
+
+Run in watch mode:
+
+```bash
+docker compose exec backend pytest-watch
+# or
+docker compose exec backend ptw
 ```
 
 ### Run linter
