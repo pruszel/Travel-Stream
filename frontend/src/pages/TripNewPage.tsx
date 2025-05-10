@@ -52,7 +52,7 @@ function AddTripForm() {
       }
 
       const formData = new FormData(event.currentTarget);
-      const newTrip = addTripFormData(formData);
+      const newTrip = formatAddTripFormData(formData);
 
       const handleTripCreation = async () => {
         const token = await firebaseUser.getIdToken();
@@ -158,7 +158,7 @@ function AddTripForm() {
   );
 }
 
-function addTripFormData(formData: FormData): BaseTrip {
+function formatAddTripFormData(formData: FormData): BaseTrip {
   return {
     name: convertFormDataToStringSafely(formData.get("trip-name")),
     description: convertFormDataToStringSafely(
