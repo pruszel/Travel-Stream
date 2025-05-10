@@ -21,10 +21,11 @@ from django.http import JsonResponse
 from rest_framework.routers import DefaultRouter
 from apps.core.views import test_post, get_csrf_token
 from apps.users.views import login_view, logout_view
-from apps.trips.views import TripViewSet
+from apps.trips.views import TripViewSet, FlightViewSet
 
 router = DefaultRouter()
 router.register(r"trips", TripViewSet, basename="trip")
+router.register(r"flights", FlightViewSet, basename="flight")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
