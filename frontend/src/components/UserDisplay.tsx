@@ -39,7 +39,7 @@ export function UserDisplay() {
         <div className="flex gap-4 items-end flex-row">
           <p className="hidden sm:inline-block">{displayText}</p>
           <button
-            className="btn btn-outline"
+            className="btn btn-sm btn-outline"
             type={"button"}
             onClick={() => {
               void signOut();
