@@ -113,7 +113,7 @@ function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
           <div className="flex gap-2">
             <button
               type="button"
-              className="btn self-start"
+              className="btn btn-sm self-start"
               onClick={() => {
                 void navigate(`/trips/${tripDetails.id.toString()}/edit`);
               }}
@@ -122,7 +122,7 @@ function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
             </button>
             <button
               type="button"
-              className="btn btn-soft btn-error"
+              className="btn btn-sm btn-soft btn-error"
               onClick={handleDeleteTripButtonClick}
             >
               {DELETE_BUTTON_TEXT}
