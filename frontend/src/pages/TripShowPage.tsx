@@ -163,7 +163,7 @@ function TripDetails({ tripDetails }: TripDetailsProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-2">
+      <section className="flex flex-col gap-2">
         <h3 className="font-bold">{tripDetails.destination}</h3>
 
         {daysUntilStartDate < 0 && daysUntilEndDate < 0 && (
@@ -188,7 +188,7 @@ function TripDetails({ tripDetails }: TripDetailsProps) {
           {tripDetails.start_date} - {tripDetails.end_date}
         </p>
         <p>{tripDetails.description}</p>
-      </div>
+      </section>
     </>
   );
 }
