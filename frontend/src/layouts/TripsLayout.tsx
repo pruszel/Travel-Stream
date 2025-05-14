@@ -23,7 +23,7 @@ export function TripsLayout() {
     if (!isAuthStateLoading && !firebaseUser) {
       void navigate("/login", { replace: true });
     }
-  }, [firebaseUser, navigate]);
+  }, [isAuthStateLoading, firebaseUser, navigate]);
 
   // Show loading state
   if (isAuthStateLoading) {

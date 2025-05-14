@@ -1,6 +1,6 @@
 // frontend/src/pages/TripShowPage.tsx
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { getTrip, deleteTrip, Trip } from "@/utils/tripService";
@@ -113,7 +113,7 @@ function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
           <div className="flex gap-2">
             <button
               type="button"
-              className="btn self-start"
+              className="btn btn-sm self-start"
               onClick={() => {
                 void navigate(`/trips/${tripDetails.id.toString()}/edit`);
               }}
@@ -122,7 +122,7 @@ function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
             </button>
             <button
               type="button"
-              className="btn btn-soft btn-error"
+              className="btn btn-sm btn-soft btn-error"
               onClick={handleDeleteTripButtonClick}
             >
               {DELETE_BUTTON_TEXT}
@@ -141,21 +141,34 @@ interface TripDetailsProps {
 function TripDetails({ tripDetails }: TripDetailsProps) {
   const { firebaseUser } = useContext(AuthContext);
 
+  const daysUntilEndDate = useMemo(
+    () =>
+      !tripDetails
+        ? 0
+        : Math.floor(
+            (new Date(tripDetails.end_date).getTime() - new Date().getTime()) /
+              (1000 * 3600 * 24),
+          ),
+    [tripDetails],
+  );
+
+  const daysUntilStartDate = useMemo(
+    () =>
+      !tripDetails
+        ? 0
+        : Math.floor(
+            (new Date(tripDetails.start_date).getTime() -
+              new Date().getTime()) /
+              (1000 * 3600 * 24),
+          ),
+    [tripDetails],
+  );
+
   if (!tripDetails || !firebaseUser) return null;
-
-  const daysUntilStartDate = Math.floor(
-    (new Date(tripDetails.start_date).getTime() - new Date().getTime()) /
-      (1000 * 3600 * 24),
-  );
-
-  const daysUntilEndDate = Math.floor(
-    (new Date(tripDetails.end_date).getTime() - new Date().getTime()) /
-      (1000 * 3600 * 24),
-  );
 
   return (
     <>
-      <div className="flex flex-col gap-2">
+      <section className="flex flex-col gap-2">
         <h3 className="font-bold">{tripDetails.destination}</h3>
 
         {daysUntilStartDate < 0 && daysUntilEndDate < 0 && (
@@ -180,7 +193,7 @@ function TripDetails({ tripDetails }: TripDetailsProps) {
           {tripDetails.start_date} - {tripDetails.end_date}
         </p>
         <p>{tripDetails.description}</p>
-      </div>
+      </section>
     </>
   );
 }
