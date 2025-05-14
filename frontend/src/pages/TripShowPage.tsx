@@ -141,8 +141,6 @@ interface TripDetailsProps {
 function TripDetails({ tripDetails }: TripDetailsProps) {
   const { firebaseUser } = useContext(AuthContext);
 
-  if (!tripDetails || !firebaseUser) return null;
-
   const daysUntilEndDate = useMemo(
     () =>
       Math.floor(
@@ -160,6 +158,8 @@ function TripDetails({ tripDetails }: TripDetailsProps) {
       ),
     [tripDetails],
   );
+
+  if (!tripDetails || !firebaseUser) return null;
 
   return (
     <>
