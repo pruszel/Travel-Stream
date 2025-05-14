@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prettier:fix": "prettier . --write",
+    "prettier:fix": "prettier . --write --list-different",
     "prettier:check": "prettier . --check",
     "test": "vitest",
     "coverage": "vitest --coverage",
