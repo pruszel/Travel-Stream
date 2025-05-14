@@ -1,6 +1,6 @@
 // frontend/src/pages/TripShowPage.tsx
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { getTrip, deleteTrip, Trip } from "@/utils/tripService";
@@ -143,14 +143,22 @@ function TripDetails({ tripDetails }: TripDetailsProps) {
 
   if (!tripDetails || !firebaseUser) return null;
 
-  const daysUntilStartDate = Math.floor(
-    (new Date(tripDetails.start_date).getTime() - new Date().getTime()) /
-      (1000 * 3600 * 24),
+  const daysUntilEndDate = useMemo(
+    () =>
+      Math.floor(
+        (new Date(tripDetails.end_date).getTime() - new Date().getTime()) /
+          (1000 * 3600 * 24),
+      ),
+    [tripDetails],
   );
 
-  const daysUntilEndDate = Math.floor(
-    (new Date(tripDetails.end_date).getTime() - new Date().getTime()) /
-      (1000 * 3600 * 24),
+  const daysUntilStartDate = useMemo(
+    () =>
+      Math.floor(
+        (new Date(tripDetails.start_date).getTime() - new Date().getTime()) /
+          (1000 * 3600 * 24),
+      ),
+    [tripDetails],
   );
 
   return (
