@@ -143,19 +143,24 @@ function TripDetails({ tripDetails }: TripDetailsProps) {
 
   const daysUntilEndDate = useMemo(
     () =>
-      Math.floor(
-        (new Date(tripDetails.end_date).getTime() - new Date().getTime()) /
-          (1000 * 3600 * 24),
-      ),
+      !tripDetails
+        ? 0
+        : Math.floor(
+            (new Date(tripDetails.end_date).getTime() - new Date().getTime()) /
+              (1000 * 3600 * 24),
+          ),
     [tripDetails],
   );
 
   const daysUntilStartDate = useMemo(
     () =>
-      Math.floor(
-        (new Date(tripDetails.start_date).getTime() - new Date().getTime()) /
-          (1000 * 3600 * 24),
-      ),
+      !tripDetails
+        ? 0
+        : Math.floor(
+            (new Date(tripDetails.start_date).getTime() -
+              new Date().getTime()) /
+              (1000 * 3600 * 24),
+          ),
     [tripDetails],
   );
 
