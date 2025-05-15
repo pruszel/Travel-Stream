@@ -11,6 +11,7 @@ import { IndexPage, SIGN_IN_TEXT } from "@/pages/IndexPage";
 import { TripListPage, PAGE_HEADER } from "@/pages/TripListPage";
 import {
   mockAuthContextLoggedIn,
+  mockAuthContextLoading,
   mockAuthContextLoggedOut,
   mockGetIdToken,
   mockToastContextValue,
@@ -27,7 +28,6 @@ describe("<IndexPage />", () => {
     vi.mocked(mockGetIdToken).mockResolvedValue("fake-token");
   });
 
-  // authContextLoggedIn.firebaseUser.getIdToken.mockResolvedValue("fake-token");
   it("renders the sign in button when logged out", () => {
     render(
       <AuthContext.Provider value={mockAuthContextLoggedOut}>
@@ -59,11 +59,36 @@ describe("<IndexPage />", () => {
       </AuthContext.Provider>,
     );
 
-    // Wait for the redirect and TripListPage to render
+    // Verify the TripListPage is displayed
     await waitFor(() => {
       expect(screen.getByText(PAGE_HEADER)).toBeInTheDocument();
     });
 
+    // Verify that IndexPage is no longer displayed
     expect(screen.queryByText(SIGN_IN_TEXT)).not.toBeInTheDocument();
+  });
+
+  it("should render loading screen when auth state is loading", () => {
+    render(
+      <AuthContext.Provider value={mockAuthContextLoading}>
+        <BrowserRouter>
+          <IndexPage />
+        </BrowserRouter>
+      </AuthContext.Provider>,
+    );
+
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+  });
+
+  it("should render loading screen when user is logged in while waiting for redirect to Trips List Page", () => {
+    render(
+      <AuthContext.Provider value={mockAuthContextLoggedIn}>
+        <BrowserRouter>
+          <IndexPage />
+        </BrowserRouter>
+      </AuthContext.Provider>,
+    );
+
+    expect(screen.getByRole("progressbar")).toBeInTheDocument();
   });
 });
