@@ -24,7 +24,7 @@ import {
   LOGIN_PAGE_SIGN_IN_DISABLED_TEXT,
 } from "@/pages/LoginPage";
 import {
-  authContextLoading,
+  mockAuthContextLoading,
   mockAuthContextLoggedIn,
   mockAuthContextLoggedOut,
   mockSignInWithGoogle,
@@ -76,7 +76,7 @@ describe("<LoginPage />", () => {
   it("renders loading state when auth state is loading", () => {
     render(
       <BrowserRouter>
-        <AuthContext.Provider value={authContextLoading}>
+        <AuthContext.Provider value={mockAuthContextLoading}>
           <LoginPage />
         </AuthContext.Provider>
       </BrowserRouter>,
