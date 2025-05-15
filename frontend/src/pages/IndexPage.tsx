@@ -5,11 +5,12 @@ import { Link, useNavigate } from "react-router";
 import { LogIn } from "lucide-react";
 
 import { AuthContext } from "@/contexts/authContext";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 export const SIGN_IN_TEXT = "Sign in";
 
 export function IndexPage() {
-  const { firebaseUser } = useContext(AuthContext);
+  const { firebaseUser, isAuthStateLoading } = useContext(AuthContext);
   const navigate = useNavigate();
 
   // Redirect to /trips if the user is authenticated
@@ -19,8 +20,8 @@ export function IndexPage() {
     }
   }, [firebaseUser, navigate]);
 
-  if (firebaseUser) {
-    return null;
+  if (isAuthStateLoading || firebaseUser) {
+    return <LoadingScreen />;
   }
 
   return (
