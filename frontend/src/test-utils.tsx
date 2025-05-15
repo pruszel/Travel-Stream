@@ -60,7 +60,7 @@ export const mockUser = {
 
 export const mockFirebaseToken = "test-firebase-token";
 
-export const authContextLoading: AuthContextType = {
+export const mockAuthContextLoading: AuthContextType = {
   firebaseUser: null,
   isAuthStateLoading: true,
   authError: undefined,

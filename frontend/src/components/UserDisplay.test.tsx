@@ -8,9 +8,9 @@ import {
   mockUser,
   mockAnalytics,
   mockSignInWithGoogle,
-  authContextLoading,
   mockAuthContextLoggedOut,
   mockAuthContextLoggedIn,
+  mockAuthContextLoading,
 } from "@/test-utils";
 import { AuthContext } from "@/contexts/authContext";
 import { getFirebaseAnalytics, trackEvent } from "@/lib/firebase";
@@ -56,7 +56,7 @@ describe("UserDisplay", () => {
 
   it("should render nothing when auth state is loading", () => {
     const { container } = render(
-      <AuthContext.Provider value={authContextLoading}>
+      <AuthContext.Provider value={mockAuthContextLoading}>
         <UserDisplay />
       </AuthContext.Provider>,
     );
