@@ -6,7 +6,7 @@ import { useParams, useNavigate } from "react-router";
 
 import { getTrip, Trip, updateTrip } from "@/utils/tripService";
 import { ToastContext } from "@/contexts/toastContext";
-import { AuthContext } from "@/contexts/authContext";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { convertFormDataToStringSafely } from "@/utils/utils";
 import { trackEvent } from "@/lib/firebase";
 import { FRIENDLY_ERROR_MESSAGES } from "@/constants.ts";
@@ -36,7 +36,7 @@ interface EditTripFormProps {
 }
 
 export function EditTripForm({ tripId }: EditTripFormProps) {
-  const { firebaseUser } = useContext(AuthContext);
+  const { firebaseUser } = useRequireAuth();
   const navigate = useNavigate();
   const { addToast } = useContext(ToastContext);
 
@@ -100,10 +100,6 @@ export function EditTripForm({ tripId }: EditTripFormProps) {
     },
     [firebaseUser, tripId, addToast, navigate],
   );
-
-  if (!firebaseUser) {
-    return null;
-  }
 
   if (!trip) {
     return <p>Loading trip details...</p>;

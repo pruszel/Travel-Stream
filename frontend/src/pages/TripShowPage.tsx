@@ -6,86 +6,94 @@ import { useNavigate, useParams } from "react-router";
 import { getTrip, deleteTrip, Trip } from "@/utils/tripService";
 import { ToastContext } from "@/contexts/toastContext";
 import { BackButton } from "@/components/BackButton";
-import { AuthContext } from "@/contexts/authContext";
 import { trackEvent } from "@/lib/firebase";
 import {
   FRIENDLY_ERROR_MESSAGES,
   TRIP_DELETED_SUCCESS_MESSAGE,
 } from "@/constants";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 export const DELETE_BUTTON_TEXT = "Delete";
 export const EDIT_BUTTON_TEXT = "Edit Trip";
 
 export function TripShowPage() {
   const { addToast } = useContext(ToastContext);
-  const { firebaseUser, isAuthStateLoading } = useContext(AuthContext);
+  const { firebaseUser } = useRequireAuth();
   const navigate = useNavigate();
-  const { id: idParam } = useParams();
+  const [tripDetails, setTripDetails] = useState<Trip | null>(null);
+  const [isTripLoading, setIsTripLoading] = useState(true);
 
-  // Serve 404 if no trip ID is given in the URL
+  // Load 404 page if no trip ID is given in the URL
+  const { id: idParam } = useParams();
+  const tripId = parseInt(idParam ?? "");
   useEffect(() => {
-    if (!idParam) {
+    if (!tripId) {
       console.error("Trip ID parameter is missing in the URL.");
       void navigate("/404", { replace: true });
     }
-  }, [idParam, navigate]);
+  }, [tripId, navigate]);
 
-  const tripId = parseInt(idParam ?? "");
-  const [tripDetails, setTripDetails] = useState<Trip | null>(null);
-
-  // Fetch trip details from the api
+  // Fetch trip details from the API
   useEffect(() => {
-    const handleLoadingTripDetails = async () => {
-      if (!firebaseUser) return; // TODO: refactor this: 1) add console.error message 2) reduce duplicated code in all trip pages
-      const token = await firebaseUser.getIdToken();
-      const response = await getTrip(token, tripId);
-      if (response.data) {
-        setTripDetails(response.data);
-      } else if (response.error) {
-        console.error("Error loading trip details: ", response.error.message);
+    const fetchTripDetails = async () => {
+      if (!firebaseUser) return;
+
+      try {
+        setIsTripLoading(true);
+        const token = await firebaseUser.getIdToken();
+        const response = await getTrip(token, tripId);
+
+        if (response.data) {
+          setTripDetails(response.data);
+          setIsTripLoading(false);
+        } else if (response.error) {
+          console.error("Error loading trip details: ", response.error.message);
+          addToast("error", FRIENDLY_ERROR_MESSAGES.general);
+        }
+      } catch (error) {
+        console.error("Error fetching trip details:", error);
         addToast("error", FRIENDLY_ERROR_MESSAGES.general);
+      } finally {
+        setIsTripLoading(false);
       }
     };
 
-    void handleLoadingTripDetails();
-  }, [firebaseUser, setTripDetails, tripId, addToast]);
-
-  if (!isAuthStateLoading && !firebaseUser) {
-    console.error(
-      "Error while rendering TripShowPage: No Firebase user found.",
-    );
-  }
-  if (!firebaseUser) return null;
+    void fetchTripDetails();
+  }, [firebaseUser, tripId, addToast]);
 
   return (
     <>
-      <TripDetailsHeader tripDetails={tripDetails} />
-      <TripDetails tripDetails={tripDetails} />
+      <TripDetailsHeader
+        tripDetails={tripDetails}
+        isTripLoading={isTripLoading}
+      />
+      <TripDetails tripDetails={tripDetails} isTripLoading={isTripLoading} />
     </>
   );
 }
 
 interface TripDetailsHeaderProps {
   tripDetails: Trip | null;
+  isTripLoading: boolean;
 }
 
-function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
-  const { firebaseUser } = useContext(AuthContext);
+function TripDetailsHeader({
+  tripDetails,
+  isTripLoading,
+}: TripDetailsHeaderProps) {
+  const { firebaseUser } = useRequireAuth();
   const { addToast } = useContext(ToastContext);
   const navigate = useNavigate();
 
-  if (!tripDetails || !firebaseUser) return null;
+  const handleDeleteTripButtonClick = async () => {
+    if (!tripDetails || !firebaseUser) return;
 
-  const handleDeleteTripButtonClick = () => {
     const confirmDelete = confirm(
       `Are you sure you want to delete this trip? This action cannot be undone.`,
     );
-    if (!confirmDelete) {
-      return;
-    }
+    if (!confirmDelete) return;
 
-    async function handleTripDeletion() {
-      if (!tripDetails || !firebaseUser) return;
+    try {
       const token = await firebaseUser.getIdToken();
       const response = await deleteTrip(token, tripDetails.id);
 
@@ -94,13 +102,36 @@ function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
         void trackEvent("delete_trip", { source: "show_page" });
         void navigate("/trips");
       } else {
-        console.error("Error deleting trip: ", response.error.message);
-        addToast("error", FRIENDLY_ERROR_MESSAGES.general);
+        throw new Error(response.error.message);
       }
+    } catch (error) {
+      console.error("Error deleting trip:", error);
+      addToast("error", FRIENDLY_ERROR_MESSAGES.general);
     }
-
-    void handleTripDeletion();
   };
+
+  // Show skeleton when loading
+  if (isTripLoading) {
+    return (
+      <>
+        <div className="flex justify-start pb-8">
+          <BackButton path={"/trips"} />
+        </div>
+        <div className="flex flex-col gap-6">
+          <div className="flex justify-between gap-4">
+            <h2 className="skeleton h-8 w-48"></h2>
+            <div className="flex gap-2">
+              <div className="skeleton h-8 w-20"></div>
+              <div className="skeleton h-8 w-16"></div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Return null if no trip details
+  if (!tripDetails) return null;
 
   return (
     <>
@@ -123,7 +154,9 @@ function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
             <button
               type="button"
               className="btn btn-sm btn-soft btn-error"
-              onClick={handleDeleteTripButtonClick}
+              onClick={() => {
+                void handleDeleteTripButtonClick();
+              }}
             >
               {DELETE_BUTTON_TEXT}
             </button>
@@ -136,11 +169,10 @@ function TripDetailsHeader({ tripDetails }: TripDetailsHeaderProps) {
 
 interface TripDetailsProps {
   tripDetails: Trip | null;
+  isTripLoading: boolean;
 }
 
-function TripDetails({ tripDetails }: TripDetailsProps) {
-  const { firebaseUser } = useContext(AuthContext);
-
+function TripDetails({ tripDetails, isTripLoading }: TripDetailsProps) {
   const daysUntilEndDate = useMemo(
     () =>
       !tripDetails
@@ -164,7 +196,20 @@ function TripDetails({ tripDetails }: TripDetailsProps) {
     [tripDetails],
   );
 
-  if (!tripDetails || !firebaseUser) return null;
+  // Show skeleton when loading
+  if (isTripLoading) {
+    return (
+      <section className="flex flex-col gap-2">
+        <div className="skeleton h-6 w-32 mb-2"></div>
+        <div className="skeleton h-5 w-24 mb-2"></div>
+        <div className="skeleton h-5 w-48 mb-2"></div>
+        <div className="skeleton h-20 w-full"></div>
+      </section>
+    );
+  }
+
+  // Return null if no trip details
+  if (!tripDetails) return null;
 
   return (
     <>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import { BaseTrip, createTrip } from "@/utils/tripService";
 import { ToastContext } from "@/contexts/toastContext";
 import { convertFormDataToStringSafely } from "@/utils/utils";
-import { AuthContext } from "@/contexts/authContext";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { trackEvent } from "@/lib/firebase";
 
 export const TRIP_NEW_PAGE_HEADER = "New Trip";
@@ -15,16 +15,9 @@ export const TRIP_NEW_PAGE_FORM_NAME = "new-trip-form";
 export const TRIP_NEW_PAGE_FORM_ACCESSIBLE_NAME = "New Trip Form";
 export const CANCEL_BUTTON_TEXT = "Cancel";
 export const TRIP_ADD_SUCCESS_MESSAGE = "Trip added successfully.";
-const ERROR_MESSAGE_NO_USER =
-  "Error while rendering TripNewPage: No Firebase user found.";
 
 export function TripNewPage() {
-  const { firebaseUser } = useContext(AuthContext);
-
-  if (!firebaseUser) {
-    console.error(ERROR_MESSAGE_NO_USER);
-    return null;
-  }
+  useRequireAuth();
 
   return (
     <>
@@ -39,7 +32,7 @@ export function TripNewPage() {
 }
 
 function AddTripForm() {
-  const { firebaseUser } = useContext(AuthContext);
+  const { firebaseUser } = useRequireAuth();
   const { addToast } = useContext(ToastContext);
   const navigate = useNavigate();
 

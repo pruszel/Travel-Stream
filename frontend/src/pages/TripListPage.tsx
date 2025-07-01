@@ -11,11 +11,12 @@ import {
 import { useNavigate } from "react-router";
 import { Trash2 } from "lucide-react";
 
-import { AuthContext } from "@/contexts/authContext";
 import { ToastContext } from "@/contexts/toastContext";
 import { deleteTrip, getTrips, Trip } from "@/utils/tripService";
 import { trackEvent } from "@/lib/firebase";
 import { FRIENDLY_ERROR_MESSAGES } from "@/constants";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
+import { User } from "firebase/auth";
 
 export const PAGE_HEADER = "My Trips";
 export const ADD_TRIP_BUTTON_TEXT = "Add Trip";
@@ -24,11 +25,9 @@ export const DELETE_TRIP_BUTTON_LABEL = "Delete trip";
 
 const ERROR_MESSAGE_LOADING_TRIPS_NO_USER =
   "Error while loading user trips: No Firebase user found.";
-const ERROR_MESSAGE_NO_USER =
-  "Error while rendering TripListPage: No Firebase user found.";
 
 export function TripListPage() {
-  const { firebaseUser } = useContext(AuthContext);
+  const { firebaseUser } = useRequireAuth();
   const navigate = useNavigate();
   const { addToast } = useContext(ToastContext);
   const [userTrips, setUserTrips] = useState<Trip[]>([]);
@@ -60,10 +59,7 @@ export function TripListPage() {
     void loadUserTrips();
   }, [firebaseUser, addToast]);
 
-  if (!firebaseUser) {
-    console.error(ERROR_MESSAGE_NO_USER);
-    return null;
-  }
+  if (!firebaseUser) return;
 
   return (
     <>
@@ -81,7 +77,11 @@ export function TripListPage() {
               {ADD_TRIP_BUTTON_TEXT}
             </button>
           </div>
-          <TripList userTrips={userTrips} setUserTrips={setUserTrips} />
+          <TripList
+            userTrips={userTrips}
+            setUserTrips={setUserTrips}
+            firebaseUser={firebaseUser}
+          />
         </div>
       </section>
     </>
@@ -91,17 +91,15 @@ export function TripListPage() {
 interface TripListProps {
   userTrips: Trip[];
   setUserTrips: Dispatch<SetStateAction<Trip[]>>;
+  firebaseUser: User;
 }
 
-function TripList({ userTrips, setUserTrips }: TripListProps) {
-  const { firebaseUser } = useContext(AuthContext);
+function TripList({ userTrips, setUserTrips, firebaseUser }: TripListProps) {
   const navigate = useNavigate();
   const { addToast } = useContext(ToastContext);
 
   const handleDeleteTrip = useCallback(
     (tripId: number) => {
-      if (!firebaseUser) return;
-
       const confirmDelete = confirm(
         `Are you sure you want to delete this trip? This action cannot be undone.`,
       );
