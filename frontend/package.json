@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "tsc:watch": "tsc --build --noEmit --watch --preserveWatchOutput",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "prettier": "prettier . --check",
     "prettier:fix": "prettier . --write --list-different",
-    "prettier:check": "prettier . --check",
     "test": "vitest",
     "coverage": "vitest --coverage",
     "build": "tsc -b && vite build",
-    "tsc:watch": "tsc --build --noEmit --watch --preserveWatchOutput",
-    "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
