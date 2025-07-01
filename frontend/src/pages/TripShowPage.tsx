@@ -153,7 +153,9 @@ function TripDetailsHeader({
             <button
               type="button"
               className="btn btn-sm btn-soft btn-error"
-              onClick={handleDeleteTripButtonClick}
+              onClick={() => {
+                void handleDeleteTripButtonClick();
+              }}
             >
               {DELETE_BUTTON_TEXT}
             </button>
