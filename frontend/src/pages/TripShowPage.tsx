@@ -54,6 +54,7 @@ export function TripShowPage() {
         console.error("Error fetching trip details:", error);
         addToast("error", FRIENDLY_ERROR_MESSAGES.general);
       } finally {
+        setIsTripLoading(false);
       }
     };
 
