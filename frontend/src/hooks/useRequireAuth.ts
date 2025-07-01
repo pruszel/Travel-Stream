@@ -1,8 +1,8 @@
 // frontend/src/hooks/useRequireAuth.ts
 
-import { useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { AuthContext } from '@/contexts/authContext';
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { AuthContext } from "@/contexts/authContext";
 
 /**
  * A hook that requires authentication to access a page.
@@ -15,7 +15,7 @@ export function useRequireAuth() {
   useEffect(() => {
     // Only redirect after auth state is loaded and user is not authenticated
     if (!isAuthStateLoading && !firebaseUser) {
-      navigate('/login', { replace: true });
+      void navigate("/login", { replace: true });
     }
   }, [firebaseUser, isAuthStateLoading, navigate]);
 
